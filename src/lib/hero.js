@@ -49,6 +49,7 @@ export function iniciarHero() {
   ativo = true;
 
   montarSelos();
+  montarProvaGrade();
   base = { headline: null, sub: null, selos: null, acoes: null, wordmark: null, bg: null };
 
   return { definirProgresso, destruir };
@@ -76,6 +77,36 @@ function montarSelos() {
     li.appendChild(txt);
 
     selos.appendChild(li);
+  }
+}
+
+/** Faixa de 4 emblemas de prova rápida no Hero */
+function montarProvaGrade() {
+  const container = document.getElementById('hero-prova-grade');
+  if (!container) return;
+  container.replaceChildren();
+
+  const itens = config.provaRapida || [];
+  for (const item of itens) {
+    const el = document.createElement('div');
+    el.className = 'hero-emblema';
+
+    const ic = document.createElement('span');
+    ic.className = 'hero-emblema__icone';
+    ic.innerHTML = icone(item.icone, { tamanho: 22 });
+    el.appendChild(ic);
+
+    const val = document.createElement('strong');
+    val.className = 'hero-emblema__valor';
+    val.textContent = item.valor;
+    el.appendChild(val);
+
+    const rot = document.createElement('span');
+    rot.className = 'hero-emblema__rotulo';
+    rot.textContent = item.rotulo;
+    el.appendChild(rot);
+
+    container.appendChild(el);
   }
 }
 

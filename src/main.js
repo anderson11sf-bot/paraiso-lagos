@@ -11,6 +11,7 @@ import * as vsl from './lib/vsl.js';
 import { montarGlebas, montarFaq, montarCtaFinal, montarRodape } from './lib/secoes5.js';
 import { montarProjetos } from './lib/projetos.js';
 import { montarLocalizacao, montarComunidade } from './lib/secoes.js';
+import { iniciarTitulos3D } from './lib/titulos3d.js';
 import { iniciarSeo } from './lib/seo.js';
 import { iniciarCookies, ligarLinkDePreferencias } from './lib/cookies.js';
 import { iniciarWhatsAppFlutuante, ligarBotoesWhatsApp } from './lib/whatsapp.js';
@@ -97,7 +98,10 @@ function arrancar() {
     montarCtaFinal();
     montarRodape();
 
-    // 7. Utilitários e WhatsApp
+    // 7. Animações 3D de títulos e cenas
+    iniciarTitulos3D();
+
+    // 8. Utilitários e WhatsApp
     ligarBarraProgresso();
     ligarCtasInternos();
     ligarBotoesWhatsApp();

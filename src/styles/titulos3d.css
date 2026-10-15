@@ -1,0 +1,124 @@
+/* ============================================================================
+ * titulos3d.css — ANIMAÇÕES 3D DOS TÍTULOS E CENAS NARRATIVAS
+ * ----------------------------------------------------------------------------
+ * 1. Cenas Narrativas 3D em palco sticky isolado (sem sobrepor outras seções)
+ * 2. Efeito de rotação 3D (rotateX + perspectiva) nos títulos de seção
+ * ==========================================================================*/
+
+/* ---------- Palco Sticky Isolado para Cenas 3D ---------------------------- */
+
+.cenas-narrativas {
+  position: relative;
+  height: 280svh;
+  background: transparent;
+  pointer-events: none;
+}
+
+.cenas-narrativas__palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  perspective-origin: center center;
+  overflow: hidden;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.cena-3d-card {
+  position: absolute;
+  width: min(92%, 640px);
+  padding: 32px 28px;
+  border-radius: 24px;
+  background: rgba(4, 25, 31, 0.85);
+  border: 1px solid rgba(111, 227, 210, 0.35);
+  box-shadow: 0 16px 48px rgba(2, 17, 20, 0.8),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12),
+              0 0 24px rgba(111, 227, 210, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out;
+  will-change: transform, opacity;
+}
+
+.cena-3d-card__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: rgba(111, 227, 210, 0.12);
+  border: 1px solid rgba(111, 227, 210, 0.3);
+  color: var(--ciano-claro);
+}
+
+.cena-3d-card__rotulo {
+  display: block;
+  font-family: var(--fonte-rotulo);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ciano-suave);
+  margin-bottom: 12px;
+}
+
+.cena-3d-card__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(1.65rem, 5vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.18;
+  color: var(--palha-forte);
+  margin: 0 0 12px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+
+.cena-3d-card__apoio {
+  font-family: var(--fonte-texto);
+  font-size: clamp(0.92rem, 3vw, 1.05rem);
+  color: var(--palha);
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+/* ---------- Efeito 3D nos Títulos de Seção (.secao-titulo-serif) ------------ */
+
+.secao-titulo-serif {
+  transform-style: preserve-3d;
+  perspective: 800px;
+  transition: transform 0.6s var(--curva), opacity 0.6s var(--curva);
+  will-change: transform, opacity;
+}
+
+.secao-titulo-serif.titulo-3d-init {
+  opacity: 0;
+  transform: perspective(800px) rotateX(24deg) translateY(20px);
+}
+
+.secao-titulo-serif.titulo-3d-ativo {
+  opacity: 1;
+  transform: perspective(800px) rotateX(0deg) translateY(0);
+}
+
+@media (min-width: 900px) {
+  .cena-3d-card {
+    padding: 44px 40px;
+    width: 680px;
+  }
+  .cena-3d-card__titulo {
+    font-size: 2.6rem;
+  }
+}
