@@ -17,36 +17,15 @@
  * encontrado na verificação da Fase 3). Posicionado, ele flutua sobre a área
  * logo abaixo da régua e o rodapé (no fluxo) cai exatamente depois dele.
  */
+.pagina-conteudo,
 .secoes {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: var(--z-conteudo);
-  /* Fundo próprio: aqui não precisa mais da cena animada atrapalhando o texto */
-  background: linear-gradient(
-    180deg,
-    rgba(4, 25, 31, 0) 0%,
-    rgba(4, 25, 31, 0.72) 6%,
-    rgba(3, 20, 25, 0.94) 14%,
-    var(--noite-abissal) 26%
-  );
+  position: relative;
+  width: 100%;
+  z-index: 1;
 }
 
-/* ---------- Reserva de altura ----------------------------------------- */
-
-/*
- * Como .secoes é posicionado (fora do fluxo), o documento NÃO reserva a altura
- * dele sozinho. Este espaçador faz esse papel: fica no fluxo, logo depois da
- * régua narrativa, e o rodapé vem naturalmente depois dele.
- *
- * A altura é medida pelo JS (--altura-secoes) depois que as seções montam e a
- * cada mudança de tamanho. Se o JS não rodar, o CSS ainda reserva um mínimo
- * razoável para o rodapé não subir em cima do conteúdo.
- */
 .espacador-secoes {
-  height: var(--altura-secoes, 400svh);
-  pointer-events: none;
+  display: none;
 }
 
 /* ---------- Painéis ---------------------------------------------------- */

@@ -45,104 +45,70 @@ function botaoWhatsApp(origem, texto, variante = 'ouro', extras = {}) {
  * ========================================================================== */
 
 export function montarGlebas() {
-  const secao = document.getElementById('chacaras');
-  if (!secao) return null;
+  const container = document.getElementById('glebas-lista') || document.getElementById('chacaras');
+  if (!container) return null;
 
-  const painel = criar('div', { classe: 'painel painel--largo' });
-  painel.appendChild(cabecalho({
-    rotulo: 'Chácaras disponíveis',
-    titulo: 'Escolha onde a sua história começa',
-    texto: 'Cada chácara tem cerca de 2 hectares, com limites definidos e uma parte do lago na própria matrícula. Toque em uma para falar direto sobre ela.'
-  }));
-
-  const lista = criar('div', { classe: 'glebas', role: 'list' });
+  container.replaceChildren();
 
   for (const g of config.glebas) {
     const cartao = criar('article', {
-      classe: 'gleba',
+      classe: 'gleba-card',
       role: 'listitem',
       'data-gleba': g.id
     });
 
-    // Faixa de identificação: letra grande + área
-    const topo = criar('header', { classe: 'gleba__topo' });
-    topo.appendChild(criar('span', { classe: 'gleba__letra', texto: g.id }));
-    const blocoNome = criar('div', { classe: 'gleba__identidade' });
-    blocoNome.appendChild(criar('h3', { classe: 'gleba__nome', texto: g.nome }));
-    blocoNome.appendChild(criar('span', { classe: 'gleba__area', texto: g.area }));
-    topo.appendChild(blocoNome);
-    cartao.appendChild(topo);
-
-    // Foto real da gleba
+    // Mídia no topo com foto real + ícones luxo flutuantes
+    const midia = criar('div', { classe: 'gleba-card__midia' });
     const fotoGleba = config.midia.fotosGlebas && config.midia.fotosGlebas[g.id];
     if (fotoGleba) {
-      const pic = criar('picture', { classe: 'gleba__foto-caixa' });
-      pic.appendChild(criar('source', { srcset: fotoGleba, type: 'image/webp' }));
-      pic.appendChild(criar('img', {
+      const img = criar('img', {
         src: fotoGleba,
-        alt: `${g.nome} — vista real da chácara`,
+        alt: `${g.nome} — vista da chácara`,
         loading: 'lazy',
         decoding: 'async',
         width: '720',
         height: '405',
-        classe: 'gleba__foto'
-      }));
-      cartao.appendChild(pic);
+        classe: 'gleba-card__foto'
+      });
+      midia.appendChild(img);
     }
 
-    // Destaques
-    const destaques = criar('ul', { classe: 'gleba__destaques' });
-    for (const d of g.destaques) destaques.appendChild(criar('li', { texto: d }));
-    cartao.appendChild(destaques);
+    // Coluna de ícones minimalistas flutuantes (lago, vista, casa)
+    const iconesCol = criar('div', { classe: 'gleba-card__icones-flutuantes', 'aria-hidden': 'true' });
+    iconesCol.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    `;
+    midia.appendChild(iconesCol);
+    cartao.appendChild(midia);
 
-    // Faixa de valor exibida (nunca preço exato)
-    const faixa = criar('p', { classe: 'gleba__faixa' });
-    const ehPlaceholder = /\[.*\]/.test(g.faixa);
-    if (ehPlaceholder) {
-      // Marcador que veio do briefing: fica visível de propósito, para você
-      // preencher no config.js. Não escondemos nem inventamos.
-      faixa.classList.add('gleba__faixa--pendente');
-      faixa.appendChild(criar('span', { classe: 'gleba__pendente', texto: 'Faixa de valor a confirmar' }));
-      faixa.appendChild(criar('span', { classe: 'gleba__pendente-nota', texto: 'Consulte no WhatsApp' }));
-    } else {
-      faixa.appendChild(criar('span', { classe: 'gleba__faixa-valor', texto: g.faixa }));
+    // Corpo de informações
+    const corpo = criar('div', { classe: 'gleba-card__corpo' });
+    corpo.appendChild(criar('h3', { classe: 'gleba-card__nome', texto: g.nome }));
+    corpo.appendChild(criar('span', { classe: 'gleba-card__area', texto: g.area }));
+
+    // Faixa dourada persuasiva
+    if (g.faixa) {
+      corpo.appendChild(criar('div', { classe: 'gleba-card__faixa-dourada', texto: g.faixa }));
     }
-    cartao.appendChild(faixa);
 
-    // Ação: WhatsApp já com o nome da gleba na mensagem
-    cartao.appendChild(botaoWhatsApp('gleba', 'Falar sobre esta chácara', 'acao', {
+    // Selos de facilidades
+    const selos = criar('div', { classe: 'gleba-card__selos' });
+    selos.appendChild(criar('span', { classe: 'gleba-card__selo', texto: 'Financia direto' }));
+    selos.appendChild(criar('span', { classe: 'gleba-card__selo', texto: 'Aceita imóvel na troca' }));
+    corpo.appendChild(selos);
+
+    // Botão de WhatsApp direto
+    corpo.appendChild(botaoWhatsApp('gleba', 'Falar sobre esta chácara no WhatsApp', 'ouro', {
       'data-wa-gleba': g.nome
     }));
 
-    lista.appendChild(cartao);
+    cartao.appendChild(corpo);
+    container.appendChild(cartao);
   }
 
-  painel.appendChild(lista);
-
-  // Condições comerciais confirmadas (só as verdadeiras)
-  const cond = config.condicoes;
-  const selos = criar('ul', { classe: 'condicoes', role: 'list' });
-  const itens = [];
-  if (cond.documentacao) itens.push('Documentação em ordem');
-  if (cond.financiamentoDireto) itens.push('Financiamento direto com o proprietário');
-  if (cond.aceitaImovel) itens.push('Aceita imóvel na negociação');
-  for (const t of itens) {
-    const li = criar('li', { classe: 'selo selo--condicao' });
-    li.appendChild(criar('span', { texto: t }));
-    selos.appendChild(li);
-  }
-  painel.appendChild(selos);
-
-  painel.appendChild(criar('p', {
-    classe: 'nota-legal',
-    texto: config.empreendimento.legal.avisoValores
-  }));
-
-  painel.appendChild(botaoWhatsApp('financiamento', 'Entender o financiamento direto', 'vidro'));
-
-  secao.replaceChildren(painel);
-  secao.hidden = false;
-  return secao;
+  return container;
 }
 
 /* ==========================================================================

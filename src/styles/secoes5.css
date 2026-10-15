@@ -590,3 +590,362 @@
   .videos__titulo-bloco { opacity: 1 !important; filter: none !important; }
   .gleba { transition: none; }
 }
+
+/* ============================================================================
+ * DESIGN SISTEMA MOCKUP (TELAS 2, 3 E 4)
+ * ==========================================================================*/
+
+.painel-mockup {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: calc(var(--e6) + var(--safe-top)) var(--e4) var(--e6);
+  text-align: center;
+}
+
+.secao-titulo-serif {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2rem, 5.2vw, 2.85rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f7fafc;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 35px rgba(111, 227, 210, 0.2);
+  margin: 0 0 10px;
+}
+
+.secao-subtitulo {
+  font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+  color: var(--terra-clara);
+  max-width: 54ch;
+  margin: 0 auto var(--e5);
+  line-height: 1.5;
+}
+
+/* ---------- TELA 2: CONHEÇA O PARAÍSO (VSL) ---------- */
+.vsl-moldura {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(111, 227, 210, 0.35);
+  box-shadow: 0 16px 45px rgba(2, 17, 20, 0.8), 0 0 30px rgba(20, 184, 166, 0.2);
+  background: #04191f;
+}
+
+.vsl-player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vsl-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vsl-btn-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.vsl-btn-play__linha {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(20, 184, 166, 0.9) 50%, transparent 100%);
+  box-shadow: 0 0 16px rgba(20, 184, 166, 0.85);
+  pointer-events: none;
+}
+
+.vsl-btn-play__pill {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 28px;
+  border-radius: 999px;
+  background: #14b8a6;
+  color: #031419;
+  font-family: var(--fonte-rotulo);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  box-shadow: 0 0 30px rgba(20, 184, 166, 0.85);
+  transition: transform 0.25s var(--curva), box-shadow 0.25s;
+}
+
+.vsl-btn-play:hover .vsl-btn-play__pill {
+  transform: scale(1.08);
+  box-shadow: 0 0 45px rgba(20, 184, 166, 1);
+}
+
+.vsl-btn-play__icone {
+  width: 18px;
+  height: 18px;
+}
+
+.vsl-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+/* ---------- TELA 3: LOTES EXCLUSIVOS (GLEBAS) ---------- */
+.glebas-grade {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--e4);
+  text-align: left;
+}
+
+@media (min-width: 680px) {
+  .glebas-grade {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.gleba-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  background: rgba(4, 25, 31, 0.85);
+  border: 1px solid rgba(111, 227, 210, 0.25);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 35px rgba(2, 17, 20, 0.7);
+  overflow: hidden;
+  transition: transform 0.25s var(--curva), border-color 0.25s;
+}
+
+@media (hover: hover) {
+  .gleba-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(111, 227, 210, 0.45);
+  }
+}
+
+.gleba-card__midia {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #021114;
+}
+
+.gleba-card__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s var(--curva);
+}
+
+.gleba-card:hover .gleba-card__foto {
+  transform: scale(1.05);
+}
+
+.gleba-card__icones-flutuantes {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: rgba(3, 20, 25, 0.75);
+  border: 1px solid rgba(111, 227, 210, 0.25);
+  backdrop-filter: blur(8px);
+  color: #6fe3d2;
+}
+
+.gleba-card__corpo {
+  padding: var(--e4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gleba-card__nome {
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f7fafc;
+  margin: 0;
+}
+
+.gleba-card__area {
+  font-family: var(--fonte-rotulo);
+  font-size: 0.9rem;
+  color: var(--turquesa);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gleba-card__faixa-dourada {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d9a83c 0%, #b8861e 100%);
+  color: #1a1202;
+  font-family: var(--fonte-rotulo);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  box-shadow: 0 4px 15px rgba(217, 168, 60, 0.3);
+  margin: 2px 0 6px;
+}
+
+.gleba-card__selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.gleba-card__selo {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(111, 227, 210, 0.12);
+  border: 1px solid rgba(111, 227, 210, 0.28);
+  color: var(--ciano-suave);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* ---------- TELA 4: PROJETOS ---------- */
+.projetos-topo-icone {
+  display: flex;
+  justify-content: center;
+  color: #6fe3d2;
+  margin-bottom: var(--e2);
+}
+
+.projetos-laser-linha {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #d9a83c 50%, transparent 100%);
+  box-shadow: 0 0 14px #d9a83c;
+  margin: var(--e3) 0 var(--e5);
+}
+
+.projetos-carrossel {
+  display: flex;
+  gap: var(--e4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 4px var(--e4);
+  -webkit-overflow-scrolling: touch;
+  text-align: left;
+}
+
+.projetos-carrossel::-webkit-scrollbar {
+  height: 6px;
+}
+.projetos-carrossel::-webkit-scrollbar-thumb {
+  background: rgba(111, 227, 210, 0.3);
+  border-radius: 999px;
+}
+
+.projeto-card {
+  flex: 0 0 280px;
+  scroll-snap-align: center;
+  border-radius: 20px;
+  background: rgba(4, 25, 31, 0.88);
+  border: 1px solid rgba(111, 227, 210, 0.25);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(2, 17, 20, 0.7);
+  overflow: hidden;
+  transition: transform 0.25s var(--curva);
+}
+
+.projeto-card__foto-caixa {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #021114;
+}
+
+.projeto-card__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s var(--curva);
+}
+
+.projeto-card:hover .projeto-card__foto {
+  transform: scale(1.05);
+}
+
+.projeto-card__status {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(2, 17, 20, 0.85);
+  border: 1px solid rgba(111, 227, 210, 0.35);
+  color: #6fe3d2;
+  font-family: var(--fonte-rotulo);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+}
+
+.projeto-card__info {
+  padding: var(--e3) var(--e4) var(--e4);
+}
+
+.projeto-card__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  color: #f7fafc;
+  margin: 0 0 6px;
+}
+
+.projeto-card__sub {
+  font-size: 0.85rem;
+  color: var(--terra-clara);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.projetos-icones-base {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: var(--e4);
+  color: #6fe3d2;
+}
+
+.icone-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(4, 25, 31, 0.7);
+  border: 1px solid rgba(111, 227, 210, 0.25);
+}
+

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#04191F">
+<meta name="theme-color" content="#031419">
+<meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 
 <title>Chácaras em São José dos Campos | Paraíso das Águas — 2 hectares com lago e água mineral</title>
@@ -25,8 +26,7 @@
 <!-- Favicon -->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
-<!-- Fontes: Cormorant Garamond (títulos) + Outfit (texto) + Quicksand (rótulos)
-     preconnect + display=swap para não bloquear o LCP -->
+<!-- Fontes: Cormorant Garamond (títulos) + Outfit (texto) + Quicksand (rótulos) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'"
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap">
 </noscript>
 
-<!-- Dados estruturados básicos -->
+<!-- Dados estruturados -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -60,146 +60,139 @@
 </script>
 </head>
 
-<body class="preload">
-  <!-- Atalho de acessibilidade: primeiro elemento focável -->
+<body>
   <a class="skip-link" href="#hero">Ir para o conteúdo</a>
 
-  <!-- Barra de progresso de leitura (topo, 2px) -->
+  <!-- Barra de progresso de leitura (topo) -->
   <div class="barra-progresso" aria-hidden="true">
     <span class="barra-progresso__fill" id="progresso-fill"></span>
   </div>
 
-  <!-- =====================================================================
-       PALCO FIXO — camadas independentes e pointer-events: none.
-       Toda a experiência visual (fundo, vidro de TV) vive aqui.
-       O conteúdo textual fica no fluxo normal, acima, dentro de #conteudo.
-       ===================================================================== -->
+  <!-- PALCO FIXO COM CANVAS DE VÍDEO EM TEMPO REAL -->
   <div class="palco" id="palco" aria-hidden="true">
     <canvas class="palco__fundo" id="fundo-canvas"></canvas>
-    <div class="palco__tela-video" id="palco-video"></div>
-    <div class="palco__grade-video" id="palco-grade"></div>
-    <div class="palco__vidro vidro" id="vidro"></div>
-    <div class="palco__vinheta" id="vinheta"></div>
+    <div class="palco__overlay-verde"></div>
   </div>
 
-  <!-- =====================================================================
-       CONTEÚDO — fluxo normal de documento (SEO + acessibilidade).
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="pagina-conteudo" id="pagina-conteudo">
 
-       IMPORTANTE: este bloco tem ALTURA FIXA (config.scroll.alturaTotalSvh).
-       É ele que define a "régua" da narrativa. As seções de conteúdo denso
-       (Fases 2 e 3) ficam FORA dele, logo abaixo, em fluxo normal — assim a
-       narrativa termina exatamente quando a última seção começa a aparecer.
-       ===================================================================== -->
-  <main class="conteudo" id="conteudo">
-
-    <!-- 1. HERO ---------------------------------------------------------- -->
+    <!-- 1. HERO (Tela 1 do Mockup) -->
     <section class="secao hero" id="hero">
-      <div class="hero__bg" id="hero-bg" aria-hidden="true">
-        <img src="/media/img/hero-lago.webp" alt="Lago do Paraíso das Águas" class="hero__bg-img" id="hero-bg-img" width="1280" height="720" fetchpriority="high">
-        <div class="hero__bg-overlay"></div>
-      </div>
-
       <div class="hero__inner">
         <div class="hero__wordmark-caixa">
-          <span class="hero__wordmark">Paraíso das Águas</span>
+          <span class="hero__wordmark">PARAÍSO DAS ÁGUAS</span>
           <span class="hero__wordmark-sub">SÃO JOSÉ DOS CAMPOS</span>
         </div>
 
         <h1 class="hero__headline" id="hero-headline">
-          Seu paraíso de <em>2 hectares</em> com lago, água mineral e segurança
+          Seu paraíso<br>de <em>2 hectares</em>
         </h1>
 
         <p class="hero__sub" id="hero-sub">
-          a 20 minutos do centro de São José dos Campos
+          Lago, água mineral e segurança, a 20 min do centro
         </p>
 
         <ul class="hero__selos" id="hero-selos" aria-label="Principais condições"></ul>
 
         <div class="hero__acoes">
           <a class="btn btn--ouro" id="hero-cta-primario" href="#" data-wa-origem="hero" rel="noopener">
-            <span class="btn__icone" aria-hidden="true"></span>
             Agendar visita no WhatsApp
           </a>
-          <a class="btn btn--vidro" id="hero-cta-secundario" href="#prova-rapida">
-            Ver as chácaras disponíveis
+          <a class="btn btn--vidro" id="hero-cta-secundario" href="#vsl">
+            Conhecer o Paraíso
           </a>
         </div>
       </div>
 
-      <!-- Aviso "Deslize para baixo" -->
+      <!-- Dica de rolagem -->
       <div class="dica" id="dica" role="status">
-        <span class="dica__texto" id="dica-texto">Deslize para baixo e descubra o paraíso</span>
-        <span class="dica__gesto" aria-hidden="true">
-          <span class="dica__dedo"></span>
-          <span class="dica__seta"></span>
-        </span>
+        <span class="dica__texto">Deslize para baixo</span>
+        <span class="dica__seta">∨</span>
       </div>
     </section>
 
-    <!-- CENA NARRATIVA DEDICADA: Palco sticky para os textos 3D -->
-    <section class="secao-cenas" id="secao-cenas">
-      <div class="cenas-palco" id="cenas-palco">
-        <div class="carrossel" id="carrossel" data-ativo="false" aria-hidden="true"></div>
+    <!-- 2. CONHEÇA O PARAÍSO (VSL - Tela 2 do Mockup) -->
+    <section class="secao secao--vsl" id="vsl">
+      <div class="painel-mockup">
+        <h2 class="secao-titulo-serif">CONHEÇA O PARAÍSO</h2>
+        <p class="secao-subtitulo">Assista ao vídeo e sinta a atmosfera única da nossa comunidade de chácaras</p>
+
+        <div class="vsl-moldura">
+          <div class="vsl-player" id="vsl-player">
+            <img src="/media/img/vsl-poster.webp" alt="Conheça o Paraíso das Águas" class="vsl-poster" id="vsl-poster" width="1280" height="720">
+            <button type="button" class="vsl-btn-play" id="vsl-btn-play" aria-label="Assistir ao vídeo do Paraíso">
+              <span class="vsl-btn-play__linha"></span>
+              <span class="vsl-btn-play__pill">
+                <svg class="vsl-btn-play__icone" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                PLAY
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
+
+    <!-- 3. LOTES EXCLUSIVOS (GLEBAS - Tela 3 do Mockup) -->
+    <section class="secao secao--glebas" id="chacaras">
+      <div class="painel-mockup">
+        <h2 class="secao-titulo-serif">LOTES EXCLUSIVOS</h2>
+        <p class="secao-subtitulo">Chácaras de 20 mil m² com parte do lago central na própria matrícula</p>
+
+        <div class="glebas-grade" id="glebas-lista"></div>
+      </div>
+    </section>
+
+    <!-- 4. PROJETOS (Casas Prontas e em Construção - Tela 4 do Mockup) -->
+    <section class="secao secao--projetos" id="projetos">
+      <div class="painel-mockup">
+        <div class="projetos-topo-icone">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 2 6.5 5 8 .5-4 3.5-7 7-7s6.5 3 7 7c3-1.5 5-4.5 5-8 0-5.5-4.5-10-10-10z"/>
+            <path d="M12 13c-2.5 0-4.5-2-4.5-4.5S9.5 4 12 4s4.5 2 4.5 4.5S14.5 13 12 13z"/>
+          </svg>
+        </div>
+        <h2 class="secao-titulo-serif">PROJETOS</h2>
+        <p class="secao-subtitulo">Casas prontas para morar e projetos em construção no Paraíso</p>
+
+        <div class="projetos-laser-linha"></div>
+
+        <div class="projetos-carrossel" id="projetos-carrossel"></div>
+
+        <div class="projetos-icones-base">
+          <span class="icone-base" title="Natureza">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2L15 8L22 9L17 14L18 21L12 17.5L6 21L7 14L2 9L9 8L12 2Z"/></svg>
+          </span>
+          <span class="icone-base" title="Água mineral">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          </span>
+          <span class="icone-base" title="Segurança">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h18M3 14h18M5 6v12M19 6v12"/></svg>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. LOCALIZAÇÃO E REPRESA JAGUARI -->
+    <section class="secao secao--localizacao" id="localizacao"></section>
+
+    <!-- 6. COMUNIDADE E SEGURANÇA -->
+    <section class="secao secao--comunidade" id="comunidade"></section>
+
+    <!-- 7. FAQ (DÚVIDAS FREQUENTES) -->
+    <section class="secao secao--faq" id="faq"></section>
+
+    <!-- 8. CTA FINAL -->
+    <section class="secao secao--cta" id="cta-final"></section>
 
   </main>
 
-  <!-- =====================================================================
-       ESPAÇADOR — reserva no fluxo a altura das seções densas
-       ===================================================================== -->
-  <div class="espacador-secoes" aria-hidden="true"></div>
-
-  <!-- =====================================================================
-       SEÇÕES DE CONTEÚDO DENSO — fluxo normal, sem animação de scroll.
-       Legíveis, indexáveis e com painel escuro semitransparente.
-       ===================================================================== -->
-  <div class="secoes" id="secoes">
-
-    <!-- 2. PROVA RÁPIDA -->
-    <section class="secao secao--painel" id="prova-rapida" hidden></section>
-
-    <!-- 3. VSL (TV que liga) chega na Fase 3 -->
-    <section class="secao secao--painel" id="vsl" hidden></section>
-
-    <!-- 4. O PARAÍSO -->
-    <section class="secao secao--painel secao--densa" id="o-paraiso" hidden></section>
-
-    <!-- 5. LOCALIZAÇÃO E DISTÂNCIAS -->
-    <section class="secao secao--painel secao--densa" id="localizacao" hidden></section>
-
-    <!-- 6. COMUNIDADE E SEGURANÇA -->
-    <section class="secao secao--painel secao--densa" id="comunidade" hidden></section>
-
-    <!-- 7. VIDA NA CHÁCARA -->
-    <section class="secao secao--painel secao--densa" id="vida-na-chacara" hidden></section>
-
-    <!-- 8. VISÃO 3D / DRONE -->
-    <section class="secao secao--painel secao--densa" id="visao-3d" hidden></section>
-
-    <!-- 9. CHÁCARAS DISPONÍVEIS (A–G) -->
-    <section class="secao secao--painel secao--densa" id="chacaras" hidden></section>
-
-    <!-- 10. VÍDEOS 2×2 COM ABERTURA "LINHA DE BAMBU" -->
-    <section class="secao secao--painel secao--densa" id="videos" hidden></section>
-
-    <!-- 11. FAQ -->
-    <section class="secao secao--painel secao--densa" id="faq" hidden></section>
-
-    <!-- 12. CTA FINAL -->
-    <section class="secao secao--painel secao--densa" id="cta-final" hidden></section>
-
-  </div>
-
-  <!-- =====================================================================
-       RODAPÉ — fora de .secoes de propósito: é o fim do documento, não uma
-       seção da narrativa.
-       ===================================================================== -->
+  <!-- RODAPÉ -->
   <footer class="rodape" id="rodape"></footer>
 
-  <!-- =====================================================================
-       BOTÃO FLUTUANTE DE WHATSAPP — arrastável, com pulso constante.
-       ===================================================================== -->
+  <!-- BOTÃO FLUTUANTE DE WHATSAPP -->
   <a class="wa-flutuante" id="wa-flutuante" href="#" data-wa-origem="flutuante"
      aria-label="Falar no WhatsApp e agendar visita" rel="noopener">
     <span class="wa-flutuante__anel" aria-hidden="true"></span>
@@ -209,8 +202,6 @@
     </svg>
     <span class="wa-flutuante__rotulo" aria-hidden="true">Agendar visita</span>
   </a>
-
-  <!-- Módulos de escurecimento (política de privacidade / cookies) → Fase 4 -->
 
   <script type="module" src="/src/main.js"></script>
 </body>

@@ -6,45 +6,28 @@
  * ==========================================================================*/
 
 .hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Espaço para dica de rolagem e área segura */
-  padding-bottom: calc(var(--e8) + 40px + var(--safe-bottom));
-  padding-top: calc(var(--e6) + var(--safe-top));
+  padding: calc(var(--e6) + var(--safe-top)) var(--e4) calc(var(--e7) + var(--safe-bottom));
   text-align: center;
   position: relative;
-  overflow: hidden;
+  background: transparent;
 }
 
-/* Fundo fotográfico do Hero com zoom suave por scroll */
+/* Fundo estático desativado: o vídeo 1 em canvas é o fundo em tempo real */
 .hero__bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.hero__bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform-origin: 50% 35%;
-  will-change: transform, opacity;
-  filter: saturate(1.1) brightness(0.95);
-}
-
-.hero__bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(4, 25, 31, 0.35) 0%, rgba(3, 20, 25, 0.72) 65%, rgba(2, 17, 20, 0.92) 100%);
+  display: none;
 }
 
 .hero__inner {
   position: relative;
   width: 100%;
   max-width: 680px;
-  margin: 0 auto;
+  margin: auto 0;
   z-index: 1;
 }
 
