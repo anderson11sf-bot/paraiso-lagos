@@ -1,0 +1,4 @@
+﻿VIDEOS — a VSL (16:9) e os 4 videos de demonstracao (9:16).
+Converta com: pwsh scripts/otimizar-midia.ps1 -Origem "sua pasta"
+Sempre MP4 H.264 com faststart. Nomes: vsl-1080.mp4, demo-1-720.mp4...
+

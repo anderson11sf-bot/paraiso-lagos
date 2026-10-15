@@ -1,0 +1,567 @@
+/* ============================================================================
+ * secoes5.css — CHÁCARAS, VÍDEOS (LINHA DE BAMBU), FAQ, CTA FINAL E RODAPÉ
+ * ==========================================================================*/
+
+/* ---------- 9. Chácaras disponíveis ----------------------------------- */
+
+.painel--largo { max-width: 980px; }
+
+.glebas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--e3);
+  margin-top: var(--e4);
+}
+
+.gleba {
+  position: relative;
+  padding: var(--e4);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--r-organico);
+  background: linear-gradient(
+    160deg,
+    rgba(10, 50, 54, 0.55) 0%,
+    rgba(6, 32, 36, 0.6) 100%
+  );
+  transition: border-color var(--t-medio) var(--curva),
+              transform var(--t-medio) var(--curva);
+}
+
+@media (hover: hover) {
+  .gleba:hover { border-color: rgba(111, 227, 210, 0.4); transform: translateY(-3px); }
+}
+
+/* Cada gleba tem a sua cor de marca (mesma família fria + ouro na G) */
+.gleba[data-gleba='A'] { --cor-gleba: #6fe3d2; }
+.gleba[data-gleba='B'] { --cor-gleba: #4fc9c0; }
+.gleba[data-gleba='C'] { --cor-gleba: #35b0a8; }
+.gleba[data-gleba='D'] { --cor-gleba: #2e9e4f; }
+.gleba[data-gleba='E'] { --cor-gleba: #128f63; }
+.gleba[data-gleba='F'] { --cor-gleba: #4a8fa8; }
+.gleba[data-gleba='G'] { --cor-gleba: #d9a83c; }
+
+.gleba__topo {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  margin-bottom: var(--e3);
+}
+
+/* A letra grande é o "selo" da gleba */
+.gleba__letra {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-organico-b);
+  border: 1px solid var(--cor-gleba, var(--cor-borda));
+  background: color-mix(in srgb, var(--cor-gleba, #14b8a6) 16%, transparent);
+  color: var(--cor-gleba, var(--ciano-claro));
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gleba__identidade { display: flex; flex-direction: column; gap: 2px; }
+
+.gleba__nome {
+  margin: 0;
+  color: var(--palha-forte);
+  font-size: 1.25rem;
+}
+
+.gleba__area {
+  color: var(--turquesa);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gleba__destaques {
+  display: grid;
+  gap: 7px;
+  margin-bottom: var(--e3);
+}
+
+.gleba__destaques li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--terra-clara);
+  font-size: var(--t-pequeno);
+}
+
+.gleba__destaques li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 60% 40% 55% 45%;
+  background: var(--cor-gleba, var(--turquesa));
+}
+
+.gleba__faixa {
+  margin: 0 0 var(--e3);
+  padding: var(--e3);
+  border-radius: var(--r-medio);
+  background: rgba(3, 20, 25, 0.55);
+  border-left: 3px solid var(--cor-gleba, var(--turquesa));
+}
+
+.gleba__faixa-valor {
+  color: var(--palha-forte);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+}
+
+/* Faixa ainda não confirmada: aparece como pendência, nunca como valor */
+.gleba__faixa--pendente {
+  border-left-style: dashed;
+  border-left-color: var(--aviso);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gleba__pendente {
+  color: var(--dourado-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+}
+
+.gleba__pendente-nota { color: var(--terra-media); font-size: var(--t-rotulo); }
+
+.gleba .btn { width: 100%; }
+
+/* Condições comerciais confirmadas */
+.condicoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  margin-top: var(--e5);
+}
+
+.selo--condicao { background: rgba(46, 158, 79, 0.12); border-color: rgba(46, 158, 79, 0.4); color: var(--palha); }
+
+.nota-legal {
+  margin: var(--e3) 0 0;
+  color: var(--terra-media);
+  font-size: var(--t-rotulo);
+}
+
+/* ---------- 10. Vídeos com abertura de bambu -------------------------- */
+
+.painel--videos { overflow: hidden; }
+
+.videos__titulo-bloco { margin-bottom: var(--e4); }
+
+.videos__titulo { margin-bottom: var(--e2); }
+
+.bambu {
+  position: relative;
+  /* Altura mínima para o efeito ter espaço de acontecer */
+  min-height: 200px;
+  margin-bottom: var(--e3);
+}
+
+/* Linha central: desce do topo até cruzar o centro */
+.bambu__linha {
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  width: 3px;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 3px;
+  /* Cor e textura de bambu: degradê com nós mais claros */
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(214, 226, 160, 0.95) 0px,
+      rgba(214, 226, 160, 0.95) 8px,
+      rgba(168, 196, 118, 0.85) 9px,
+      rgba(168, 196, 118, 0.85) 11px
+    );
+  box-shadow: 0 0 18px rgba(196, 220, 140, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  will-change: top, opacity, transform;
+}
+
+/* As duas metades que se separam quando os vídeos abrem */
+.bambu__linha--topo,
+.bambu__linha--base {
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(214, 226, 160, 0.9) 0px,
+      rgba(214, 226, 160, 0.9) 8px,
+      rgba(168, 196, 118, 0.8) 9px,
+      rgba(168, 196, 118, 0.8) 11px
+    );
+}
+
+/* Nós do bambu: traços curtos atravessando a linha */
+.bambu__no {
+  position: absolute;
+  left: 50%;
+  width: 15px;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: rgba(236, 244, 200, 0.85);
+}
+
+/* Área que é revelada pelo recorte (clip-path escrito pelo JS) */
+.bambu__recorte {
+  position: relative;
+  clip-path: inset(50% 0 50% 0);
+  will-change: clip-path;
+}
+
+/* Grade de vídeos: 2×2 no PC; no celular vira carrossel horizontal */
+.videos {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 78%;
+  gap: var(--e3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--e2);
+  /* A barra de rolagem é discreta: o gesto é o principal */
+  scrollbar-width: thin;
+  scrollbar-color: var(--cor-borda) transparent;
+}
+
+.videos::-webkit-scrollbar { height: 4px; }
+.videos::-webkit-scrollbar-thumb { background: var(--cor-borda); border-radius: 4px; }
+
+.video-card {
+  margin: 0;
+  scroll-snap-align: center;
+  min-width: 0;
+}
+
+.video-card__botao {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* 9:16 — vertical, como foi gravado */
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--r-organico);
+  background: #061d24;
+  cursor: pointer;
+  transition: border-color var(--t-medio) var(--curva);
+}
+
+@media (hover: hover) {
+  .video-card__botao:hover { border-color: rgba(111, 227, 210, 0.45); }
+}
+
+.video-card__poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.video-card__poster img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Placeholder cinza onde o poster entra (pedido do briefing) */
+.video-card__poster--vazio {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(126, 148, 161, 0.16) 0px,
+      rgba(126, 148, 161, 0.16) 10px,
+      rgba(126, 148, 161, 0.08) 10px,
+      rgba(126, 148, 161, 0.08) 20px
+    ),
+    linear-gradient(180deg, #123a42 0%, #071f28 100%);
+}
+
+.video-card__poster--vazio::after {
+  content: 'Vídeo entra aqui';
+  padding: 5px 12px;
+  border: 1px dashed rgba(168, 242, 230, 0.35);
+  border-radius: 999px;
+  color: var(--terra-clara);
+  font-family: var(--fonte-rotulo);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.video-card__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 251, 244, 0.45);
+  background: rgba(3, 20, 25, 0.66);
+  color: var(--orvalho);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: transform var(--t-rapido) var(--curva);
+}
+
+.video-card__play .icone { fill: currentColor; stroke: none; }
+
+.video-card__botao:hover .video-card__play { transform: translate(-50%, -50%) scale(1.08); }
+
+.video-card__botao--tocando .video-card__play { display: none; }
+
+.video-card__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.video-card__legenda {
+  margin-top: var(--e2);
+  color: var(--terra-clara);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ---------- 11. FAQ ---------------------------------------------------- */
+
+.faq { margin-top: var(--e4); }
+
+.faq__item {
+  border-bottom: 1px solid rgba(20, 81, 79, 0.55);
+}
+
+.faq__pergunta {
+  position: relative;
+  padding: var(--e3) var(--e6) var(--e3) 0;
+  color: var(--palha-forte);
+  font-family: var(--fonte-rotulo);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Esconde o marcador padrão e desenha um "+" que vira "–" */
+.faq__pergunta::-webkit-details-marker { display: none; }
+.faq__pergunta::after {
+  content: '+';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--turquesa);
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform var(--t-medio) var(--curva);
+}
+.faq__item[open] .faq__pergunta::after { content: '–'; }
+
+.faq__resposta {
+  padding: 0 0 var(--e4);
+  /* Leitura confortável: a resposta não compete com a pergunta */
+  max-width: 62ch;
+}
+
+.faq__resposta p { margin: 0 0 var(--e2); color: var(--cor-texto-fraco); }
+
+.faq__link {
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+}
+
+/* ---------- 12. CTA final --------------------------------------------- */
+
+.painel--cta { text-align: center; }
+
+.cta__titulo {
+  font-size: clamp(1.7rem, 6.4vw, 2.8rem);
+}
+
+.cta__texto {
+  max-width: 54ch;
+  margin: 0 auto var(--e4);
+}
+
+.passos {
+  display: grid;
+  gap: var(--e3);
+  max-width: 520px;
+  margin: 0 auto var(--e5);
+  text-align: left;
+}
+
+.passos__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e3);
+}
+
+.passos__numero {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(111, 227, 210, 0.4);
+  background: rgba(111, 227, 210, 0.1);
+  color: var(--ciano-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 700;
+}
+
+.passos__texto { color: var(--cor-texto-fraco); font-size: var(--t-corpo); }
+
+.cta__acoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e3);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.cta__acoes .btn { width: 100%; }
+
+.cta__escassez {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  margin: var(--e5) 0 0;
+  padding: 8px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  background: rgba(3, 20, 25, 0.5);
+  color: var(--terra-clara);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Rodapé ----------------------------------------------------- */
+
+.rodape {
+  position: relative;
+  z-index: var(--z-conteudo);
+  padding: var(--e7) var(--e4) calc(var(--e6) + var(--safe-bottom));
+  border-top: 1px solid var(--cor-borda);
+  background: linear-gradient(180deg, rgba(3, 20, 25, 0.9) 0%, #021114 100%);
+}
+
+.rodape__dentro {
+  display: grid;
+  gap: var(--e5);
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.rodape__marca {
+  display: block;
+  margin-bottom: var(--e2);
+  color: var(--palha-forte);
+  font-family: var(--fonte-titulo);
+  font-size: 1.35rem;
+}
+
+.rodape__sobre {
+  max-width: 46ch;
+  color: var(--terra-media);
+  font-size: var(--t-pequeno);
+}
+
+.rodape__titulo {
+  margin-bottom: var(--e2);
+  color: var(--ciano-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+}
+
+.rodape__links,
+.rodape__dados {
+  display: grid;
+  gap: 8px;
+}
+
+.rodape__links a { font-size: var(--t-pequeno); }
+.rodape__dados li { color: var(--terra-media); font-size: var(--t-rotulo); }
+.rodape__botao { margin-bottom: var(--e3); }
+
+.rodape__base {
+  max-width: 980px;
+  margin: var(--e6) auto 0;
+  padding-top: var(--e4);
+  border-top: 1px solid rgba(20, 81, 79, 0.45);
+}
+
+.rodape__aviso {
+  margin: 0 0 6px;
+  color: var(--terra-media);
+  font-size: var(--t-rotulo);
+}
+
+.rodape__copyright {
+  margin: 0;
+  color: var(--terra-media);
+  font-size: var(--t-rotulo);
+  opacity: 0.8;
+}
+
+/* ---------- Telas maiores --------------------------------------------- */
+
+@media (min-width: 720px) {
+  .glebas { grid-template-columns: repeat(2, 1fr); }
+  .videos {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-columns: auto;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+  .cta__acoes { flex-direction: row; justify-content: center; max-width: none; }
+  .cta__acoes .btn { width: auto; }
+  .rodape__dentro { grid-template-columns: 1.4fr 1fr 1fr; }
+}
+
+@media (min-width: 1100px) {
+  .glebas { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- Sem movimento --------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sem abertura: os vídeos ficam visíveis desde o início. */
+  .bambu__linha, .bambu__no { display: none; }
+  .bambu__recorte { clip-path: none !important; opacity: 1 !important; }
+  .videos__titulo-bloco { opacity: 1 !important; filter: none !important; }
+  .gleba { transition: none; }
+}

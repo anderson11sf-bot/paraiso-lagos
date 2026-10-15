@@ -1,0 +1,337 @@
+/* ============================================================================
+ * legal.css — PÁGINAS SECUNDÁRIAS E AVISOS LEGAIS
+ * ----------------------------------------------------------------------------
+ * Cobre: política de privacidade, política de cookies, 404, banner de
+ * consentimento e o painel de preferências.
+ *
+ * Estas páginas não têm narrativa nem palco fixo — são texto, então precisam
+ * de largura de leitura confortável e contraste alto.
+ * ==========================================================================*/
+
+/* ---------- Páginas legais --------------------------------------------- */
+
+.pagina-legal {
+  background:
+    radial-gradient(90% 40% at 50% 0%, rgba(20, 90, 90, 0.28) 0%, rgba(4, 25, 31, 0) 70%),
+    var(--noite-abissal);
+}
+
+.topo-legal {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--cor-borda);
+  background: rgba(3, 20, 25, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.topo-legal__dentro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 12px var(--e4);
+}
+
+.topo-legal__marca {
+  color: var(--palha-forte);
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.principal-legal {
+  padding: var(--e6) var(--e4) var(--e8);
+}
+
+.legal__envolucro { max-width: 780px; margin: 0 auto; }
+
+.legal { color: var(--cor-texto-fraco); }
+
+.legal__titulo {
+  margin-bottom: var(--e5);
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+}
+
+.legal h2 {
+  margin: var(--e6) 0 var(--e3);
+  padding-top: var(--e4);
+  border-top: 1px solid rgba(20, 81, 79, 0.5);
+  color: var(--palha-forte);
+  font-size: clamp(1.2rem, 4.4vw, 1.6rem);
+}
+
+.legal h3 {
+  margin: var(--e4) 0 var(--e2);
+  color: var(--ciano-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.legal p { line-height: 1.7; }
+
+.legal a { text-decoration: underline; text-underline-offset: 3px; }
+
+.legal code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(111, 227, 210, 0.1);
+  color: var(--ciano-claro);
+  font-size: 0.9em;
+}
+
+.legal__rodape {
+  margin-top: var(--e6);
+  padding-top: var(--e4);
+  border-top: 1px solid var(--cor-borda);
+  color: var(--terra-media);
+  font-size: var(--t-pequeno);
+}
+
+/* ---------- Aviso de texto modelo ------------------------------------- */
+
+.aviso-juridico {
+  margin-bottom: var(--e5);
+  padding: var(--e4);
+  border: 1px dashed rgba(217, 168, 60, 0.5);
+  border-radius: var(--r-organico);
+  background: rgba(217, 168, 60, 0.07);
+}
+
+.aviso-juridico strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--dourado-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.aviso-juridico p { margin: 0; color: var(--palha); font-size: var(--t-pequeno); }
+
+/* ---------- Campos que faltam preencher ------------------------------- */
+
+.dado-pendente {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px dashed rgba(224, 163, 46, 0.55);
+  border-radius: 5px;
+  background: rgba(224, 163, 46, 0.1);
+  color: var(--dourado-claro);
+  font-family: var(--fonte-rotulo);
+  font-size: 0.82em;
+  font-weight: 600;
+}
+
+/* ---------- Listas, dados e tabelas ----------------------------------- */
+
+.lista-legal {
+  margin: 0 0 var(--e4);
+  padding-left: var(--e4);
+  list-style: disc;
+}
+
+.lista-legal li {
+  margin-bottom: 8px;
+  color: var(--cor-texto-fraco);
+  line-height: 1.6;
+}
+
+.legal ol.lista-legal { list-style: decimal; }
+
+.dados-legais {
+  margin: 0 0 var(--e4);
+  padding: var(--e4);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--r-medio);
+  background: rgba(10, 50, 54, 0.4);
+}
+
+.dado {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(20, 81, 79, 0.35);
+}
+
+.dado:last-child { border-bottom: 0; }
+
+.dado dt {
+  color: var(--turquesa);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dado dd { margin: 0; color: var(--palha); font-size: var(--t-pequeno); }
+
+.tabela-legal {
+  width: 100%;
+  margin: 0 0 var(--e4);
+  border-collapse: collapse;
+  font-size: var(--t-pequeno);
+}
+
+.tabela-legal th,
+.tabela-legal td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(20, 81, 79, 0.45);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabela-legal th {
+  color: var(--ciano-claro);
+  font-family: var(--fonte-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: var(--t-rotulo);
+}
+
+.tabela-legal td { color: var(--cor-texto-fraco); }
+
+/* Em telas estreitas a tabela rola de lado em vez de amassar o texto */
+.legal { overflow-x: auto; }
+.tabela-legal { min-width: 520px; }
+
+/* ---------- 404 -------------------------------------------------------- */
+
+.legal--404 { text-align: center; padding-top: var(--e6); }
+
+/* ---------- Banner de cookies ----------------------------------------- */
+
+.cookies {
+  position: fixed;
+  left: var(--e3);
+  right: var(--e3);
+  bottom: calc(var(--e3) + var(--safe-bottom));
+  z-index: var(--z-cookies);
+  display: grid;
+  gap: var(--e3);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--e4);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--r-organico);
+  background: linear-gradient(170deg, rgba(4, 28, 34, 0.97) 0%, rgba(3, 20, 25, 0.98) 100%);
+  box-shadow: 0 20px 50px rgba(2, 17, 20, 0.7);
+  /* Começa escondido e entra por opacidade — nada de empurrar o conteúdo */
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-medio) var(--curva), transform var(--t-medio) var(--curva);
+}
+
+.cookies[data-visivel='true'] { opacity: 1; transform: translateY(0); }
+.cookies[hidden] { display: none; }
+
+.cookies__titulo {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--palha-forte);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cookies__texto p {
+  margin: 0 0 4px;
+  color: var(--cor-texto-fraco);
+  font-size: var(--t-pequeno);
+  line-height: 1.5;
+}
+
+.cookies__links a { font-size: var(--t-rotulo); text-decoration: underline; }
+
+.cookies__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+}
+
+/* Os três botões ocupam a mesma largura: recusar é tão fácil quanto aceitar */
+.cookies__acoes .btn { flex: 1 1 140px; min-height: 44px; padding: 10px 16px; }
+
+.btn--pequeno { min-height: 44px; padding: 10px 18px; font-size: var(--t-rotulo); }
+
+/* ---------- Painel de personalização ---------------------------------- */
+
+.cookies__painel {
+  display: grid;
+  gap: var(--e3);
+  padding-top: var(--e3);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.cookies__painel[hidden] { display: none; }
+
+.cookies__painel-titulo {
+  margin: 0;
+  color: var(--palha-forte);
+  font-size: 1.05rem;
+}
+
+.cookies__opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e3);
+  cursor: pointer;
+}
+
+.cookies__switch {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--turquesa);
+}
+
+.cookies__opcao-texto { display: grid; gap: 2px; }
+
+.cookies__opcao-texto strong {
+  color: var(--palha);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+}
+
+.cookies__opcao-texto span {
+  color: var(--terra-media);
+  font-size: var(--t-rotulo);
+  line-height: 1.45;
+}
+
+.cookies__painel-acoes { display: flex; }
+
+.cookies__painel-acoes .btn { flex: 1 1 auto; }
+
+/* ---------- Telas maiores --------------------------------------------- */
+
+@media (min-width: 720px) {
+  .cookies {
+    left: auto;
+    right: var(--e5);
+    bottom: var(--e5);
+    width: min(560px, 46vw);
+    max-width: none;
+    margin: 0;
+  }
+  .cookies__acoes .btn { flex: 0 1 auto; }
+  .cookies__painel-acoes .btn { flex: 0 1 auto; }
+}
+
+/* ---------- Sem movimento --------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cookies { transition: none; }
+}

@@ -1,0 +1,10 @@
+/* Ponto único de entrada dos estilos (Vite junta tudo em um CSS só). */
+@import './tokens.css';
+@import './base.css';
+@import './palco.css';
+@import './hero.css';
+@import './carrossel.css';
+@import './secoes.css';
+@import './vsl.css';
+@import './secoes5.css';
+@import './legal.css';

@@ -1,0 +1,44 @@
+# PUBLIC — arquivos copiados como estão para a raiz do site publicado
+
+Tudo aqui dentro chega ao site com o MESMO caminho. É a pasta certa para
+imagens, vídeos, frames, poster, favicon, robots.txt e sitemap.xml.
+
+```
+public/
+├── favicon.svg
+├── robots.txt
+├── sitemap.xml
+├── .well-known/security.txt
+└── media/
+    ├── img/      → fotos, posters, logo, ortofoto
+    ├── video/    → VSL (16:9) e os 4 vídeos de demonstração (9:16)
+    └── frames/   → sequências de frames dos 3 fundos (fundo1_0001.webp…)
+```
+
+## Nomes de arquivo (obrigatório)
+- Sem espaço, sem acento, tudo minúsculo: `lago-amanhecer-1280.avif`
+- Use hífen, nunca underline: `casa-sede-deck.webp`
+
+## Como os caminhos aparecem no site
+Depois de copiado, `public/media/img/lago.avif` fica acessível em
+`/media/img/lago.avif` — e é exatamente assim que você preenche no `config.js`:
+
+```js
+midia: {
+  pastas: { img: '/media/img/', video: '/media/video/', frames: '/media/frames/' },
+  vsl: { poster: '/media/img/vsl-poster.avif', src: '/media/video/vsl-1080.mp4' },
+  videos: [
+    { poster: '/media/img/demo-1.avif', src: '/media/video/demo-1.mp4', titulo: 'Demonstração 1' },
+    // …
+  ]
+}
+```
+
+## Nesta fase (Fase 1)
+O fundo da Etapa 1 é **procedural** (desenhado em canvas pelo site). Nenhum
+arquivo é necessário aqui ainda. Se você quiser trocar por frames reais depois,
+basta preencher `fundo.frames.etapa1` no `config.js` — o site passa a usar a
+sequência automaticamente.
+
+O script `scripts/otimizar-midia.sh` (Fase 4) converte tudo que você colocar
+aqui nos formatos e tamanhos corretos.

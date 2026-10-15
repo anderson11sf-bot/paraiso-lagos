@@ -1,0 +1,4 @@
+﻿IMAGENS — fotos das chacaras, lagos, casas, logo, posters e a ortofoto.
+Converta com: pwsh scripts/otimizar-midia.ps1 -Origem "sua pasta"
+Nomes: sem espaco, sem acento, minusculos, com hifen (lago-amanhecer-1280.avif).
+

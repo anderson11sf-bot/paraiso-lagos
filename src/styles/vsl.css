@@ -1,0 +1,231 @@
+/* ============================================================================
+ * vsl.css — A TV QUE LIGA
+ * ----------------------------------------------------------------------------
+ * A moldura nasce DESLIGADA (preta). O que se move aqui é clip-path, transform
+ * e opacity — nunca layout. Toda a animação vem do progresso, então subir o
+ * scroll desliga a TV exatamente ao contrário.
+ * ==========================================================================*/
+
+.vsl {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Moldura externa: borda fina, cantos levemente arredondados */
+.vsl__tela {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-medio);
+  border: 1px solid rgba(111, 227, 210, 0.22);
+  /* Desligada: preta. É por isso que o efeito de ligar funciona. */
+  background: #01090c;
+  box-shadow: 0 24px 60px rgba(2, 17, 20, 0.6);
+  /* O recorte é escrito pelo JS (clip-path). começa fechada. */
+  clip-path: inset(50% 0 50% 0);
+  will-change: clip-path;
+}
+
+/* Borda acesa quando a TV está ligada */
+.vsl[data-ligada='true'] .vsl__tela {
+  box-shadow: 0 24px 60px rgba(2, 17, 20, 0.6), 0 0 40px rgba(111, 227, 210, 0.14);
+}
+
+/* ---------- Linhas de luz ------------------------------------------- */
+
+.vsl__linha {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  transform: translate(-50%, -50%) scaleX(0);
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(168, 242, 230, 0) 0%,
+    rgba(168, 242, 230, 0.9) 22%,
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(168, 242, 230, 0.9) 78%,
+    rgba(168, 242, 230, 0) 100%
+  );
+  box-shadow: 0 0 14px rgba(168, 242, 230, 0.75);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Flash do "ligar" ---------------------------------------- */
+
+.vsl__flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    70% 60% at 50% 50%,
+    rgba(217, 251, 244, 0.9) 0%,
+    rgba(168, 242, 230, 0.35) 45%,
+    rgba(168, 242, 230, 0) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ---------- Fachada (poster + conteúdo) ----------------------------- */
+
+.vsl__fachada {
+  position: absolute;
+  inset: 0;
+}
+
+.vsl__poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+}
+
+.vsl__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder funcional: degradê de cena da chácara + aviso */
+.vsl__poster--vazio {
+  background-image:
+    radial-gradient(60% 50% at 68% 26%, rgba(244, 208, 122, 0.28) 0%, rgba(244, 208, 122, 0) 70%),
+    linear-gradient(180deg, #0f3f49 0%, #17635f 46%, #0a2b36 100%);
+}
+
+.vsl__aviso {
+  padding: 6px 14px;
+  border: 1px dashed rgba(168, 242, 230, 0.4);
+  border-radius: 999px;
+  background: rgba(3, 20, 25, 0.62);
+  color: var(--terra-clara);
+  font-family: var(--fonte-rotulo);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vsl__conteudo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--e2);
+  padding: var(--e4);
+  text-align: center;
+  /* Véu para o texto ficar legível sobre qualquer poster */
+  background: linear-gradient(
+    180deg,
+    rgba(2, 17, 20, 0) 30%,
+    rgba(2, 17, 20, 0.55) 68%,
+    rgba(2, 17, 20, 0.82) 100%
+  );
+  opacity: 0;
+}
+
+.vsl__titulo {
+  margin: 0;
+  color: var(--palha-forte);
+  font-size: clamp(1.15rem, 4.4vw, 2rem);
+  text-shadow: 0 4px 24px rgba(2, 17, 20, 0.8);
+}
+
+.vsl__subtitulo {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--palha);
+  font-size: var(--t-pequeno);
+  text-shadow: 0 3px 16px rgba(2, 17, 20, 0.8);
+}
+
+/* ---------- Botão PLAY ---------------------------------------------- */
+
+.vsl__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: 54px;
+  padding: 0 24px;
+  border: 1px solid rgba(217, 251, 244, 0.5);
+  border-radius: 999px;
+  background: rgba(3, 20, 25, 0.62);
+  color: var(--orvalho);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform var(--t-rapido) var(--curva),
+              background-color var(--t-rapido) linear,
+              box-shadow var(--t-medio) var(--curva);
+  box-shadow: 0 0 30px rgba(2, 17, 20, 0.5), 0 0 0 1px rgba(217, 251, 244, 0.08) inset;
+}
+
+.vsl__play:hover,
+.vsl__play:focus-visible {
+  background: rgba(6, 40, 46, 0.8);
+  transform: translate(-50%, -50%) scale(1.04);
+  box-shadow: 0 0 40px rgba(111, 227, 210, 0.28);
+}
+
+.vsl__play:disabled { cursor: default; }
+
+.vsl__play--sem-fonte {
+  border-style: dashed;
+  color: var(--terra-clara);
+  font-size: var(--t-rotulo);
+}
+
+.vsl__play-icone { line-height: 0; }
+.vsl__play-icone .icone { fill: currentColor; stroke: none; }
+
+/* ---------- Vídeo de verdade ---------------------------------------- */
+
+.vsl__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.vsl__tela--tocando .vsl__conteudo,
+.vsl__tela--tocando .vsl__flash { display: none; }
+
+.vsl__legenda {
+  margin: var(--e3) 0 0;
+  color: var(--terra-media);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ---------- Sem movimento ------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sem rotação/clip animado: a TV já nasce ligada e legível. */
+  .vsl__tela { clip-path: none !important; }
+  .vsl__linha { display: none; }
+  .vsl__conteudo { opacity: 1 !important; filter: none !important; transform: none !important; }
+}

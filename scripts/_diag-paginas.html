@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>diag-paginas</title>
+<style>body{margin:0;background:#000;font:12px monospace;color:#0f0}#out{padding:8px;white-space:pre-wrap}
+iframe{position:absolute;left:-9999px}</style>
+</head>
+<body>
+<div id="out">…</div>
+<script>
+/* Ferramenta de verificação: monta cada página secundária num iframe e mede o
+   conteúdo gerado (títulos, seções, campos pendentes). Não faz parte do site. */
+const linhas = [];
+const log = (k, v) => linhas.push(String(k).padEnd(30) + ' = ' + v);
+const q = new URLSearchParams(location.search);
+const largura = Number(q.get('w') || 390);
+const altura = Number(q.get('h') || 844);
+
+const paginas = [
+  ['privacidade', '/politica-de-privacidade.html'],
+  ['cookies', '/politica-de-cookies.html'],
+  ['404', '/404.html']
+];
+
+let pronto = 0;
+
+function carregar(nome, url) {
+  const f = document.createElement('iframe');
+  f.width = largura; f.height = altura;
+  f.src = url;
+  document.body.appendChild(f);
+  f.addEventListener('load', () => setTimeout(() => medir(nome, f), 1400));
+}
+
+function medir(nome, f) {
+  try {
+    const w = f.contentWindow, d = f.contentDocument;
+    const doc = d.documentElement;
+    linhas.push(`===== ${nome} =====`);
+    log('data-pd-ok', doc.dataset.pdOk || 'AUSENTE');
+    log('data-pd-erro', doc.dataset.pdErro || 'nenhum');
+    log('title', (d.title || '').slice(0, 56));
+    log('secoes (h2)', d.querySelectorAll('.legal h2').length);
+    log('subsecoes (h3)', d.querySelectorAll('.legal h3').length);
+    log('paragrafos', d.querySelectorAll('.legal p').length);
+    log('tabelas', d.querySelectorAll('.tabela-legal').length);
+    log('linhas de tabela', d.querySelectorAll('.tabela-legal tbody tr').length);
+    log('campos pendentes', d.querySelectorAll('.dado-pendente').length);
+    log('aviso juridico', !!d.querySelector('.aviso-juridico'));
+    log('rodape montado', d.querySelectorAll('.rodape__coluna').length);
+    log('botao de cookies', d.querySelectorAll('[data-abrir-cookies]').length);
+    log('links WhatsApp', d.querySelectorAll('[data-wa-origem][href*="wa.me"]').length);
+    log('overflow horizontal', doc.scrollWidth - doc.clientWidth);
+    log('altura do documento', doc.scrollHeight);
+  } catch (e) {
+    log(`ERRO em ${nome}`, e.message);
+  }
+
+  pronto++;
+  if (pronto === paginas.length) {
+    document.getElementById('out').textContent = linhas.join('\n');
+    document.title = 'DIAG||' + linhas.join('||').replace(/\s+/g, ' ');
+  }
+}
+
+paginas.forEach(([n, u]) => carregar(n, u));
+</script>
+</body></html>

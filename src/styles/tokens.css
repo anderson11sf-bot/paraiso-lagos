@@ -1,0 +1,119 @@
+/* ============================================================================
+ * tokens.css — IDENTIDADE VISUAL "ÁGUAS DA ROÇA"
+ * ----------------------------------------------------------------------------
+ * Paleta derivada do clima de luz do filme, aplicada 100% ao tema chácara.
+ * Regra absoluta: NADA de mar, recife, coral, concha, peixe, onda do mar.
+ * A água aqui é lago, riacho e nascente.
+ * ==========================================================================*/
+
+:root {
+  /* ---------- Verdes e azuis profundos (base da página) ------------------ */
+  --noite-abissal:   #04191F;  /* fundo raiz */
+  --petroleo-fundo:  #062427;  /* seções alternadas */
+  --petroleo-card:   #0A3236;  /* cards, painéis */
+  --petroleo-linha:  #14514F;  /* bordas e divisores */
+  --teal-profundo:   #0B4A4A;  /* superfícies em destaque */
+  --esmeralda:       #128F63;  /* apoios vivos */
+  --folha:           #2E9E4F;  /* verde-folha */
+
+  /* ---------- Luz da água e das folhas (acento bioluminescente) ---------- */
+  --ciano-suave:     #6FE3D2;  /* brilho na água e nas folhas — AÇÃO */
+  --ciano-claro:     #A8F2E6;  /* hover e glow */
+  --turquesa:        #1FB6A6;  /* preenchimentos, ícones ativos */
+  --orvalho:         #D9FBF4;  /* realce máximo, micro-brilho */
+
+  /* ---------- Toques discretos (só em detalhes) -------------------------- */
+  --roxo-entardecer: #6A5ACD;  /* céu do entardecer */
+  --magenta-flor:    #B84A8C;  /* flores — uso raríssimo */
+
+  /* ---------- Dourado quente (acento de CTA) ----------------------------- */
+  --dourado:         #D9A83C;
+  --dourado-claro:   #F0C766;
+
+  /* ---------- Neutros de terra e roça ----------------------------------- */
+  --palha:           #F0E9D8;  /* texto principal (off-white quente) */
+  --palha-forte:     #FBF7EE;  /* títulos */
+  --terra-clara:     #B9C4B4;  /* texto secundário */
+  --terra-media:     #86938B;  /* legendas */
+  --sombra-verde:    #021114;  /* sombras — NUNCA preto puro */
+
+  /* ---------- Feedback ------------------------------------------------ */
+  --sucesso:         #4FCB6B;
+  --perigo:          #D9503F;
+  --aviso:           #E0A32E;
+
+  /* ---------- Semânticos ------------------------------------------------ */
+  --cor-fundo:       var(--noite-abissal);
+  --cor-painel:      var(--petroleo-card);
+  --cor-borda:       var(--petroleo-linha);
+  --cor-texto:       var(--palha);
+  --cor-texto-fraco: var(--terra-clara);
+  --cor-acao:        var(--ciano-suave);
+  --cor-acao-texto:  var(--noite-abissal);
+  --cor-cta:         var(--dourado);
+  --cor-cta-texto:   var(--noite-abissal);
+
+  /* ---------- Tipografia ----------------------------------------------- */
+  --fonte-titulo: 'Cormorant Garamond', 'Marcellus', Georgia, 'Times New Roman', serif;
+  --fonte-texto:  'Outfit', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-rotulo: 'Quicksand', 'Outfit', system-ui, sans-serif;
+
+  --t-hero:    clamp(2.05rem, 8.6vw, 4.4rem);
+  --t-h2:      clamp(1.75rem, 6.4vw, 3rem);
+  --t-h3:      clamp(1.2rem, 4.4vw, 1.7rem);
+  --t-corpo:   clamp(1rem, 3.9vw, 1.12rem);
+  --t-pequeno: clamp(0.82rem, 3.2vw, 0.92rem);
+  --t-rotulo:  clamp(0.68rem, 2.7vw, 0.78rem);
+
+  --altura-linha: 1.5;
+  --altura-linha-titulo: 1.08;
+  --tracking-rotulo: 0.16em;
+
+  /* ---------- Forma ---------------------------------------------------- */
+  --r-pequeno: 8px;
+  --r-medio:   16px;
+  --r-grande:  26px;
+  --r-organico: 28px 10px 28px 10px;   /* pétala / folha */
+  --r-organico-b: 10px 28px 10px 28px; /* espelhado */
+
+  /* ---------- Espaço (escala 8pt) -------------------------------------- */
+  --e1: 4px;   --e2: 8px;   --e3: 16px;  --e4: 24px;
+  --e5: 32px;  --e6: 48px;  --e7: 64px;  --e8: 96px;  --e9: 128px;
+
+  /* ---------- Movimento ------------------------------------------------- */
+  --t-rapido: 180ms;
+  --t-medio:  320ms;
+  --t-lento:  620ms;
+  --curva:    cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* ---------- Sombras (coloridas, nunca preto puro) -------------------- */
+  --sombra-suave: 0 8px 24px rgba(2, 17, 20, 0.5);
+  --sombra-cartao: 0 14px 40px rgba(2, 17, 20, 0.62);
+  --brilho-acao:  0 0 22px rgba(111, 227, 210, 0.34);
+  --brilho-cta:   0 0 26px rgba(217, 168, 60, 0.34);
+
+  /* ---------- Z-index (uma escala só, documentada) ---------------------- */
+  --z-palco:     0;
+  --z-conteudo:  10;
+  --z-progresso: 60;
+  --z-dica:      20;
+  --z-wa:        70;
+  --z-cookies:   80;
+  --z-overlay:   90;
+
+  /* ---------- Valores controlados pelo JS (não editar aqui) ------------- */
+  --altura-scroll: 780svh;   /* sobrescrito por main.js a partir de config.js */
+
+  /* ---------- Área segura de tela (notch / barra de gestos) ------------- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* Preferência do sistema: menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-rapido: 0ms; --t-medio: 0ms; --t-lento: 0ms;
+  }
+}

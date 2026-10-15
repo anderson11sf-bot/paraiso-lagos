@@ -1,0 +1,325 @@
+/* ============================================================================
+ * palco.css — PALCO FIXO, VIDRO DE TV, PROGRESSO, DICA e WHATSAPP FLUTUANTE
+ * ----------------------------------------------------------------------------
+ * Um único palco fixo com camadas. Nada aqui recebe transform de ancestral,
+ * senão position: fixed quebra (regra do projeto).
+ * ==========================================================================*/
+
+/* ---------- PALCO ------------------------------------------------------- */
+
+.palco {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-palco);
+  /* O palco é só cenário: nunca intercepta toque/clique */
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--noite-abissal);
+  /* --------------------------------------------------------------------
+   * FUNDO DE SEGURANÇA (rede de proteção)
+   * --------------------------------------------------------------------
+   * O fundo "de verdade" é o canvas procedural. Este degradê em CSS fica
+   * ATRÁS dele e existe para o caso de o canvas não desenhar — navegador sem
+   * canvas 2D, WebView antiga, erro de runtime. Custo: zero (é estático, não
+   * anima e não usa imagem).
+   *
+   * O resultado é a mesma cena em versão simplificada: céu de amanhecer em
+   * cima, água escura embaixo.
+   * ------------------------------------------------------------------ */
+  background-image:
+    radial-gradient(70% 38% at 62% 30%, rgba(244, 208, 122, 0.20) 0%, rgba(244, 208, 122, 0) 70%),
+    radial-gradient(120% 55% at 50% 8%, rgba(90, 150, 140, 0.55) 0%, rgba(9, 38, 48, 0) 70%),
+    linear-gradient(
+      180deg,
+      #0e3a44 0%,
+      #14545a 32%,
+      #1d6a63 50%,
+      #123f4c 56%,
+      #0a2c37 74%,
+      #061c26 100%
+    );
+  /* isolate: cria um contexto de pintura próprio (não vaza para o conteúdo) */
+  isolation: isolate;
+  /* Avisa o navegador que essas camadas vão mudar (ajuda o compositor) */
+  contain: strict;
+}
+
+.palco__fundo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* O canvas é o cenário; a nitidez vem do DPR interno controlado */
+  image-rendering: auto;
+  opacity: 0;
+  transition: opacity 900ms var(--curva);
+}
+.palco.pronto .palco__fundo { opacity: 1; }
+
+/* Modo de prova (?prova=1): mostra o canvas na hora, sem transição.
+   Usado só pelas ferramentas de verificação visual. */
+body.prova-sem-fade .palco__fundo {
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* Reservas para as Fases 2 e 3 (tela de VSL e grade de vídeos no palco) */
+.palco__tela-video,
+.palco__grade-video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Vinheta própria do palco (independente do vidro) */
+.palco__vinheta {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 42%, rgba(2, 17, 20, 0.55) 100%);
+  opacity: 1;
+}
+
+/* ---------- VIDRO DE TV -------------------------------------------------
+ * Vidro escuro semitransparente + reflexo diagonal + vinheta + scanlines.
+ * NUNCA animar blur/backdrop-filter: só opacidade de camadas estáticas.
+ * ---------------------------------------------------------------------- */
+
+.vidro {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(2, 17, 20, var(--vidro-opacidade, 0.28));
+  border: 1px solid rgba(168, 242, 230, var(--vidro-borda, 0.35));
+  border-radius: var(--vidro-raio, 14px);
+  box-shadow:
+    /* vinheta nas bordas */
+    inset 0 0 120px 40px rgba(2, 17, 20, var(--vidro-vinheta, 0.55)),
+    /* brilho fino na borda interna */
+    inset 0 0 0 1px rgba(217, 251, 244, 0.06);
+}
+
+/* Reflexo diagonal suave: uma faixa clara atravessando o vidro */
+.vidro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    118deg,
+    rgba(217, 251, 244, 0) 30%,
+    rgba(217, 251, 244, var(--vidro-reflexo, 0.10)) 46%,
+    rgba(217, 251, 244, 0.04) 54%,
+    rgba(217, 251, 244, 0) 70%
+  );
+}
+
+/* Scanlines / textura de TV: gradiente repetido minúsculo (custo ~zero) */
+.vidro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(217, 251, 244, var(--vidro-scanline, 0.035)) 0px,
+    rgba(217, 251, 244, var(--vidro-scanline, 0.035)) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+}
+
+/* backdrop-filter só em painéis pequenos e apenas em aparelho forte.
+   A classe .sem-backdrop é aplicada pelo modo LITE. */
+.palco.com-backdrop .vidro {
+  backdrop-filter: saturate(112%) contrast(104%);
+  -webkit-backdrop-filter: saturate(112%) contrast(104%);
+}
+
+/* ---------- BARRA DE PROGRESSO (topo) ---------------------------------- */
+
+.barra-progresso {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: var(--z-progresso);
+  height: 2px;
+  background: rgba(4, 25, 31, 0.5);
+  pointer-events: none;
+}
+
+.barra-progresso__fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--turquesa), var(--ciano-suave) 55%, var(--dourado));
+  box-shadow: 0 0 10px rgba(111, 227, 210, 0.5);
+  /* A barra é movida por transform: 60fps garantidos, sem reflow */
+}
+
+/* ---------- DICA "DESLIZE PARA BAIXO" ---------------------------------- */
+
+.dica {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--e5) + var(--safe-bottom));
+  z-index: var(--z-dica);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e2);
+  transform: translateX(-50%);
+  text-align: center;
+  transition: opacity var(--t-lento) var(--curva),
+              transform var(--t-lento) var(--curva);
+  will-change: opacity, transform;
+}
+
+.dica[data-visivel='false'] {
+  opacity: 0;
+  transform: translateX(-50%) translateY(14px);
+  pointer-events: none;
+}
+
+.dica__texto {
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: rgba(4, 25, 31, 0.55);
+  color: var(--orvalho);
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-rotulo);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* Brilho pulsante suave (CSS puro, fora do scroll) */
+  animation: pulso-brilho 2.8s var(--curva) infinite;
+}
+
+@keyframes pulso-brilho {
+  0%, 100% { opacity: 0.72; text-shadow: 0 0 6px rgba(111, 227, 210, 0.25); }
+  50%      { opacity: 1;    text-shadow: 0 0 18px rgba(111, 227, 210, 0.65); }
+}
+
+.dica__gesto {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 40px;
+}
+
+/* Dedo que desliza para baixo */
+.dica__dedo {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: var(--ciano-claro);
+  box-shadow: 0 0 12px rgba(168, 242, 230, 0.7);
+  animation: deslizar 2.4s var(--curva) infinite;
+}
+
+/* Seta (chevron) desenhada com borda — sem imagem */
+.dica__seta {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-right: 2px solid var(--turquesa);
+  border-bottom: 2px solid var(--turquesa);
+  transform: rotate(45deg);
+  animation: seta-baixo 2.4s var(--curva) infinite;
+}
+
+@keyframes deslizar {
+  0%   { transform: translateY(0);     opacity: 0; }
+  22%  { opacity: 1; }
+  70%  { transform: translateY(22px);  opacity: 0.85; }
+  100% { transform: translateY(26px);  opacity: 0; }
+}
+
+@keyframes seta-baixo {
+  0%, 40% { opacity: 0.35; }
+  70%     { opacity: 1; }
+  100%    { opacity: 0.35; }
+}
+
+/* ---------- WHATSAPP FLUTUANTE (arrastável) ---------------------------- */
+
+.wa-flutuante {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--z-wa);
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  min-width: 62px;
+  height: 62px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: linear-gradient(150deg, #2BD46A, #17A44F);
+  color: #04190F;
+  box-shadow: 0 12px 30px rgba(2, 17, 20, 0.55), 0 0 0 1px rgba(217, 251, 244, 0.18) inset;
+  /* O botão é posicionado por translate3d (JS) — apenas composição */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  /* Impede o navegador de rolar/zoom enquanto arrastamos */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: grab;
+}
+.wa-flutuante:active { cursor: grabbing; }
+.wa-flutuante:hover { color: #04190F; }
+
+.wa-flutuante__icone {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  fill: currentColor;
+}
+
+.wa-flutuante__rotulo {
+  font-family: var(--fonte-rotulo);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Anel do pulso: constante, fora do scroll (permitido pelo projeto) */
+.wa-flutuante__anel {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid rgba(43, 212, 106, 0.6);
+  animation: anel-pulso 2.6s var(--curva) infinite;
+}
+
+@keyframes anel-pulso {
+  0%   { transform: scale(1);    opacity: 0.75; }
+  70%  { transform: scale(1.32); opacity: 0; }
+  100% { transform: scale(1.32); opacity: 0; }
+}
+
+/* Quando a pessoa arrasta, o pulso para (evita confusão visual) */
+.wa-flutuante.arrastando .wa-flutuante__anel { animation: none; opacity: 0; }
+
+/* Enquanto o hero está visível, o rótulo aparece; depois só o ícone */
+.wa-flutuante__rotulo { display: none; }
+.wa-flutuante.compacto { padding: 0; width: 62px; justify-content: center; }
+.wa-flutuante.compacto .wa-flutuante__rotulo { display: none; }
+
+/* ---------- Modo LITE (aparelho fraco) --------------------------------- */
+
+body.modo-lite .vidro::after { display: none; }        /* sem scanlines */
+body.modo-lite .palco__vinheta { opacity: 0.75; }      /* vinheta mais simples */
+body.modo-lite .wa-flutuante__anel { animation-duration: 3.6s; }

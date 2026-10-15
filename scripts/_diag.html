@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>diag</title>
+<style>body{margin:0;background:#000;font:12px monospace;color:#0f0}#out{padding:6px;white-space:pre-wrap}</style>
+</head>
+<body>
+<div id="out">…</div>
+<script>
+/* Ferramenta de verificação do projeto (não vai para produção).
+   Uso: copie para dist/ e abra  /_diag.html?w=390&h=844
+   Ela carrega o site num iframe com viewport exato e mede o estado real. */
+const linhas = [];
+const log = (k, v) => linhas.push(String(k).padEnd(30) + ' = ' + v);
+const q = new URLSearchParams(location.search);
+const largura = Number(q.get('w') || 390);
+const altura = Number(q.get('h') || 844);
+
+const f = document.createElement('iframe');
+f.style.cssText = 'border:0;display:block;background:#000';
+f.width = largura; f.height = altura;
+f.src = '/index.html';
+document.body.appendChild(f);
+
+setTimeout(() => {
+  try {
+    const w = f.contentWindow, d = f.contentDocument;
+    const doc = d.documentElement;
+
+    log('iframe viewport', largura + 'x' + altura);
+    log('innerWidth/innerHeight', w.innerWidth + 'x' + w.innerHeight);
+    log('data-pd-ok', doc.dataset.pdOk || 'AUSENTE');
+    log('data-pd-erro', doc.dataset.pdErro || 'nenhum');
+    log('data-pd-fundo', doc.dataset.pdFundo || 'AUSENTE');
+    log('data-pd-pronto', doc.dataset.pdPronto || 'AUSENTE');
+    log('__PD existe', !!w.__PD);
+    const env = w.__PD && w.__PD.ambiente;
+    if (env) log('ambiente', 'mobile=' + env.mobile + ' lite=' + env.modoLite + ' mem=' + env.memoria);
+
+    log('OVERFLOW HORIZONTAL', doc.scrollWidth - doc.clientWidth);
+    log('doc.scrollHeight', doc.scrollHeight);
+    log('--altura-scroll', getComputedStyle(doc).getPropertyValue('--altura-scroll').trim());
+    log('body.className', d.body.className);
+
+    const canvas = d.getElementById('fundo-canvas');
+    if (canvas) {
+      const r = canvas.getBoundingClientRect();
+      log('canvas CSS', Math.round(r.width) + 'x' + Math.round(r.height));
+      log('canvas buffer', canvas.width + 'x' + canvas.height);
+      log('canvas opacity', getComputedStyle(canvas).opacity);
+      log('canvas transition', getComputedStyle(canvas).transitionProperty);
+      // Prova: desliga a transição e mede de novo
+      canvas.style.transition = 'none';
+      canvas.style.opacity = '1';
+      log('canvas opacity forcada', getComputedStyle(canvas).opacity);
+      try {
+        const g = canvas.getContext('2d');
+        const a = [];
+        for (const [px, py] of [[0.5,0.08],[0.5,0.42],[0.5,0.55],[0.5,0.60],[0.5,0.78],[0.5,0.96]]) {
+          const p = g.getImageData(Math.round(canvas.width*px), Math.round(canvas.height*py), 1, 1).data;
+          a.push(py + ':' + p[0] + ',' + p[1] + ',' + p[2]);
+        }
+        log('pixels do fundo', a.join(' | '));
+      } catch (e) { log('pixels', 'falhou: ' + e.message); }
+    } else { log('canvas', 'AUSENTE'); }
+
+    log('palco.className', (d.getElementById('palco')||{}).className || 'AUSENTE');
+
+    const wa = d.getElementById('wa-flutuante');
+    if (wa) {
+      const r = wa.getBoundingClientRect();
+      log('WA rect', Math.round(r.left) + ',' + Math.round(r.top) + ' ' + Math.round(r.width) + 'x' + Math.round(r.height));
+      log('WA dentro da tela', r.top >= -1 && r.left >= -1 && r.bottom <= altura + 1 && r.right <= largura + 1);
+      log('WA href valido', (wa.getAttribute('href')||'').includes('wa.me/5512983208335'));
+    }
+
+    const h1 = d.getElementById('hero-headline');
+    if (h1) {
+      const r = h1.getBoundingClientRect();
+      log('headline', 'w=' + Math.round(r.width) + ' h=' + Math.round(r.height) + ' top=' + Math.round(r.top));
+      log('headline font/opacity', getComputedStyle(h1).fontSize + ' / ' + getComputedStyle(h1).opacity);
+    }
+    const selos = d.getElementById('hero-selos');
+    log('selos (qtd)', selos ? selos.children.length : 'AUSENTE');
+
+    const lista = [];
+    // Ignora quem está DENTRO de um carrossel com rolagem própria: o conteúdo
+    // passa da borda de propósito e é acessado por gesto, não é vazamento.
+    const dentroDeCarrossel = (el) => {
+      let p = el.parentElement;
+      while (p && p !== d.body) {
+        const ox = getComputedStyle(p).overflowX;
+        if (ox === 'auto' || ox === 'scroll') return true;
+        p = p.parentElement;
+      }
+      return false;
+    };
+    d.querySelectorAll('body *').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && (r.right > largura + 1 || r.left < -1) && !dentroDeCarrossel(el)) {
+        lista.push(el.tagName.toLowerCase() + '.' + String(el.className||'').split(' ')[0] + ' → ' + Math.round(r.left) + '..' + Math.round(r.right));
+      }
+    });
+    log('elementos estourando', lista.length);
+    lista.slice(0, 8).forEach((c) => linhas.push('    ' + c));
+
+    // Geometria do documento: quem vem depois de quem, e onde fica o rodapé.
+    const elConteudo = d.getElementById('conteudo');
+    const elSecoes = d.getElementById('secoes');
+    const elRodape = d.getElementById('rodape');
+    const topoDoc = (el) => el ? Math.round(el.getBoundingClientRect().top + w.scrollY) : null;
+    const alt = (el) => el ? Math.round(el.getBoundingClientRect().height) : null;
+
+    linhas.push('--- GEOMETRIA DO DOCUMENTO ---');
+    log('altura do documento', d.documentElement.scrollHeight);
+    log('conteudo (narrativa)', `topo=${topoDoc(elConteudo)} altura=${alt(elConteudo)}`);
+    log('secoes', `topo=${topoDoc(elSecoes)} altura=${alt(elSecoes)}`);
+    log('rodape', `topo=${topoDoc(elRodape)} altura=${alt(elRodape)}`);
+    log('rodape e o ultimo?', d.body.lastElementChild === elRodape);
+    log('ultimo filho do body', d.body.lastElementChild
+      ? d.body.lastElementChild.tagName + '#' + d.body.lastElementChild.id : 'nenhum');
+    if (elSecoes && elRodape) {
+      const s = elSecoes.getBoundingClientRect();
+      const r2 = elRodape.getBoundingClientRect();
+      log('rodape comeca depois de secoes?', r2.top >= s.bottom - 2,
+        `(secoes.base=${Math.round(s.bottom + w.scrollY)} / rodape.topo=${Math.round(r2.top + w.scrollY)})`);
+    }
+
+    const rolavel = doc.scrollHeight - w.innerHeight;
+    w.scrollTo(0, Math.round(rolavel * 0.30));
+  } catch (e) { log('EXCECAO', e.message); }
+
+  setTimeout(() => {
+    try {
+      const w = f.contentWindow, d = f.contentDocument;
+      const canvas = d.getElementById('fundo-canvas');
+      linhas.push('--- apos rolar a 30% ---');
+      log('scrollY', Math.round(w.scrollY));
+      if (canvas) {
+        const g = canvas.getContext('2d');
+        const p = g.getImageData(Math.round(canvas.width*0.5), Math.round(canvas.height*0.42), 1, 1).data;
+        log('pixel ceu a 30%', p[0] + ',' + p[1] + ',' + p[2]);
+      }
+      const fill = d.getElementById('progresso-fill');
+      if (fill) log('barra progresso', getComputedStyle(fill).transform);
+      const h1 = d.getElementById('hero-headline');
+      if (h1) log('headline apos rolar', 'op=' + getComputedStyle(h1).opacity + ' tf=' + getComputedStyle(h1).transform);
+      const dica = d.getElementById('dica');
+      if (dica) log('dica data-visivel', dica.dataset.visivel);
+
+      // --- CARROSSEL 3D -------------------------------------------------
+      const car = d.getElementById('carrossel');
+      if (car) {
+        log('carrossel data-ativo', car.dataset.ativo);
+        const itens = car.querySelectorAll('.carrossel__item');
+        log('carrossel blocos', itens.length);
+        let visiveis = 0, escrito = [];
+        itens.forEach((el, i) => {
+          const cs = getComputedStyle(el);
+          if (cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0.05) {
+            visiveis++;
+            if (escrito.length < 4) {
+              escrito.push(`#${i} op=${parseFloat(cs.opacity).toFixed(2)} tf=${cs.transform.slice(0, 46)}`);
+            }
+          }
+        });
+        log('carrossel visiveis', visiveis);
+        escrito.forEach((l) => linhas.push('    ' + l));
+        log('carrossel aria-hidden', car.getAttribute('aria-hidden'));
+      } else { log('carrossel', 'AUSENTE'); }
+
+      // --- SECOES -------------------------------------------------------
+      for (const id of ['prova-rapida', 'o-paraiso', 'localizacao', 'comunidade', 'vida-na-chacara', 'visao-3d']) {
+        const el = d.getElementById(id);
+        if (!el) { log(id, 'AUSENTE'); continue; }
+        const r = el.getBoundingClientRect();
+        log(id, `hidden=${el.hidden} filhos=${el.children.length} top=${Math.round(r.top)} h=${Math.round(r.height)}`);
+      }
+      linhas.push('--- FASE 3 ---');
+      for (const id of ['vsl', 'chacaras', 'videos', 'faq', 'cta-final', 'rodape']) {
+        const el = d.getElementById(id);
+        if (!el) { log(id, 'AUSENTE'); continue; }
+        const r = el.getBoundingClientRect();
+        log(id, `hidden=${el.hidden} filhos=${el.children.length} top=${Math.round(r.top)} h=${Math.round(r.height)}`);
+      }
+      log('glebas (cards)', d.querySelectorAll('.gleba').length);
+      log('glebas com faixa pendente', d.querySelectorAll('.gleba__faixa--pendente').length);
+      log('videos (cards)', d.querySelectorAll('.video-card').length);
+      log('posters vazios (placeholder)', d.querySelectorAll('.video-card__poster--vazio').length);
+      log('faq itens', d.querySelectorAll('.faq__item').length);
+      log('faq sem resposta', d.querySelectorAll('.faq__link').length);
+      log('passos do CTA', d.querySelectorAll('.passos__item').length);
+      log('rodape links', d.querySelectorAll('.rodape__links a').length);
+      log('vsl moldura', d.querySelectorAll('.vsl').length);
+      log('vsl botao play', d.querySelectorAll('.vsl__play').length);
+      log('bambu linhas', d.querySelectorAll('.bambu__linha').length);
+      log('bambu nos', d.querySelectorAll('.bambu__no').length);
+      log('total secoes densas', d.querySelectorAll('.secoes > .secao').length);
+      log('links WhatsApp na pagina', d.querySelectorAll('[data-wa-origem]').length);
+      log('link com href valido', d.querySelectorAll('[data-wa-origem][href*="wa.me"]').length);
+      log('planta esquematica', !!d.querySelector('.planta svg'));
+      log('icones svg', d.querySelectorAll('svg.icone').length);
+
+      // --- FASE 4: SEO, consentimento, cookies --------------------------
+      linhas.push('--- FASE 4 ---');
+      log('title', (d.title || '').slice(0, 60));
+      const md = d.querySelector('meta[name="description"]');
+      log('meta description', md ? md.getAttribute('content').length + ' caracteres' : 'AUSENTE');
+      const canon = d.querySelector('link[rel="canonical"]');
+      log('canonical', canon ? canon.getAttribute('href') : 'AUSENTE');
+      const og = d.querySelector('meta[property="og:title"]');
+      log('og:title', og ? 'presente' : 'AUSENTE');
+      const jsonld = d.getElementById('pd-jsonld');
+      log('JSON-LD', jsonld ? jsonld.textContent.length + ' caracteres' : 'AUSENTE');
+      if (jsonld) {
+        try {
+          const dados = JSON.parse(jsonld.textContent);
+          const tipos = (dados['@graph'] || []).map((n) => n['@type']);
+          log('  tipos no grafo', tipos.join(', '));
+          const faq = (dados['@graph'] || []).find((n) => n['@type'] === 'FAQPage');
+          log('  perguntas no FAQ', faq ? faq.mainEntity.length : 0);
+        } catch (e) { log('  JSON-LD invalido', e.message); }
+      }
+      log('banner de cookies', !!d.getElementById('cookies'));
+      log('backdrop do palco', (d.getElementById('palco')||{}).className || 'AUSENTE');
+      log('total de style inline', d.querySelectorAll('[style]').length);
+      linhas.push('--- bundle ---');
+      log('scripts externos', d.querySelectorAll('script[src]').length);
+      log('scripts com tag de terceiro', Array.from(d.querySelectorAll('script[src]'))
+        .filter((s) => /facebook|googletagmanager|google-analytics/.test(s.src)).length);
+
+      // --- TESTE FUNCIONAL DO CONSENTIMENTO -----------------------------
+      // Simula a pessoa clicando em "Aceitar todos" e confere se as tags
+      // entram no documento. Restaura a escolha no fim.
+      linhas.push('--- TESTE DE CONSENTIMENTO ---');
+      const favorito = d.createElement('span');
+      try {
+        w.localStorage.removeItem('pd-consent-v1');
+        const guardado = w.localStorage.getItem('pd-consent-v1');
+        log('storage antes', guardado === null ? 'vazio (correto)' : guardado);
+
+        // Procura os botões do banner e aciona o "Aceitar todos"
+        const botoes = Array.from(d.querySelectorAll('.cookies__acoes button'));
+        log('botoes do banner', botoes.map((b) => b.textContent).join(' | ') || 'NENHUM');
+        const aceitar = botoes.find((b) => /aceitar/i.test(b.textContent));
+        if (aceitar) {
+          aceitar.click();
+          const depois = w.localStorage.getItem('pd-consent-v1');
+          log('storage depois de aceitar', depois || 'VAZIO');
+          const tags = Array.from(d.querySelectorAll('script[src]'))
+            .filter((s) => /facebook|googletagmanager|google-analytics/.test(s.src));
+          log('tags injetadas apos aceitar', tags.length);
+          tags.forEach((t) => linhas.push('    ' + t.src.slice(0, 62)));
+          log('dataLayer criado', Array.isArray(w.dataLayer));
+          log('gtag disponivel', typeof w.gtag === 'function');
+        } else {
+          log('botao aceitar', 'NAO ENCONTRADO');
+        }
+      } catch (e) {
+        log('ERRO no teste', e.message);
+      }
+      linhas.push('--- fim do teste ---');
+
+      // --- DIAGNOSTICO INTERNO DO FUNDO ---------------------------------
+      const diag = w.__PD && w.__PD.controleFundo && w.__PD.controleFundo.getDiagnostico
+        ? w.__PD.controleFundo.getDiagnostico() : null;
+      if (diag) {
+        linhas.push('--- fundo (interno) ---');
+        log('fundo tamanho/dpr', `${diag.largura}x${diag.altura} dpr=${diag.dpr} esc=${diag.escalaInterna}`);
+        log('fundo canvas', diag.canvas);
+        log('fundo modoLite', diag.modoLite);
+        for (const b of diag.buffers) {
+          log(`buffer ${b.chave}`, `${b.buffer} pPintado=${b.pPintado} pAtual=${b.pAtual} pPuro=${b.pPuro}${b.erro ? ' ERRO=' + b.erro : ''}`);
+        }
+        if (diag.pesos) {
+          log('pesos', `e1=${diag.pesos.etapa1.toFixed(3)} e2=${diag.pesos.etapa2.toFixed(3)} e3=${diag.pesos.etapa3.toFixed(3)}`);
+        }
+        const cf = w.__PD && w.__PD.controleFundo;
+        if (cf && cf.amostrarBuffer) {
+          for (const chave of ['etapa1', 'etapa2', 'etapa3']) {
+            log(`buffer ${chave} pixels`, cf.amostrarBuffer(chave));
+          }
+        }
+        if (cf && cf.gradeBuffer) {
+          for (const chave of ['etapa1', 'etapa2', 'etapa3']) {
+            linhas.push(`--- grade ${chave} (3x8, topo -> base) ---`);
+            const grade = cf.gradeBuffer(chave, 3, 8) || [];
+            grade.forEach((l, i) => linhas.push(`  ${String(i).padStart(2)}: ${l}`));
+          }
+        }
+        if (cf && cf.testarPintura) {
+          linhas.push('--- pintura em canvas NOVO (magenta = nada desenhado) ---');
+          w.__PD_RASTRO = [];
+          for (const chave of ['etapa1', 'etapa2', 'etapa3']) {
+            const r = cf.testarPintura(chave, 0.75);
+            log(`pintura ${chave}`, r ? `${r.tamanho} ${r.amostras}${r.erro ? ' ERRO=' + r.erro : ''}` : 'null');
+            if (r) log(`  gradiente controle ${chave}`, r.gradienteControle);
+          }
+          log('rastro da pintura', w.__PD_RASTRO.join(' > ') || 'NENHUMA MARCA');
+        }
+      } else { log('fundo diagnostico', 'indisponivel'); }
+    } catch (e) { log('EXC2', e.message); }
+
+    document.getElementById('out').textContent = linhas.join('\n');
+    document.title = 'DIAG||' + linhas.join('||').replace(/\s+/g, ' ');
+  }, 2200);
+}, 3200);
+</script>
+</body></html>

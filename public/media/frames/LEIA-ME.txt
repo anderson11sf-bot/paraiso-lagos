@@ -1,0 +1,4 @@
+﻿FRAMES DAS CENAS DE FUNDO — sequencias WebP para trocar a animacao procedural
+por video real. Nomeie fundo1_0001.webp, fundo2_0001.webp, fundo3_0001.webp.
+Depois preencha fundo.frames no config.js.
+

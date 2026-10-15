@@ -1,0 +1,4 @@
+Contact: mailto:SEU-EMAIL@SEU-DOMINIO.com.br
+Expires: 2027-12-31T23:59:00.000Z
+Preferred-Languages: pt-BR
+Canonical: https://SEU-DOMINIO.com.br/.well-known/security.txt

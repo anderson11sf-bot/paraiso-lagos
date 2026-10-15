@@ -1,0 +1,138 @@
+# ============================================================================
+# .htaccess — HOSPEDAGEM COMPARTILHADA (Hostinger / Apache)
+# ----------------------------------------------------------------------------
+# Este arquivo vai junto com o build: ele fica em public/, então o Vite copia
+# para a raiz do dist/ automaticamente.
+#
+# O QUE ELE FAZ
+#   1. Força HTTPS e o domínio canônico (sem www)
+#   2. Comprime (Brotli quando existir, Gzip como reserva)
+#   3. Cache longo para arquivos com hash e curto para HTML
+#   4. Cabeçalhos de segurança (HSTS, CSP, nosniff, frame-ancestors...)
+#   5. Tipos MIME que o Apache antigo não conhece (avif, webp, webm, vtt)
+#   6. Página 404 própria
+#
+# ATENÇÃO: a Content-Security-Policy abaixo permite o próprio domínio, o Meta
+# Pixel e o Google Tag. Se você adicionar outra ferramenta, inclua o domínio
+# dela aqui — senão o navegador bloqueia.
+# ============================================================================
+
+# ---------------------------------------------------------------------------
+# 1. HTTPS e domínio canônico
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Força HTTPS (descomente depois de ativar o SSL grátis no painel)
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Remove www (escolha UMA versão e mantenha; troque o domínio abaixo)
+  # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  # RewriteRule ^(.*)$ https://%1/$1 [L,R=301]
+
+  # Sem barra no fim (exceto em diretórios), para o canonical bater
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 2. Compressão
+# ---------------------------------------------------------------------------
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+  AddOutputFilterByType BROTLI_COMPRESS application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 3. Cache
+# ---------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # Arquivos com hash no nome: podem ser cacheados para sempre
+  <FilesMatch "\.(js|css|woff2?|ttf|otf)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(avif|webp|png|jpe?g|gif|svg|ico|mp4|webm)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML: sempre revalidar (o nome não muda, o conteúdo sim)
+  <FilesMatch "\.(html|htm)$">
+    ExpiresDefault "access plus 0 seconds"
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Textos que mudam pouco
+  <FilesMatch "\.(txt|xml|json)$">
+    ExpiresDefault "access plus 1 day"
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 4. Cabeçalhos de segurança
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # Força HTTPS por 1 ano neste domínio e subdomínios
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Impede o navegador de "adivinhar" o tipo do arquivo
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Não vaza a URL completa para sites externos
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Desliga câmera, microfone e geolocalização (o site não usa nenhum)
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
+
+  # A página não pode ser embutida em outro site (proteção contra clickjacking)
+  Header always set X-Frame-Options "DENY"
+
+  # ------------------------------------------------------------------------
+  # Content-Security-Policy
+  # 'unsafe-inline' aparece SÓ em style-src porque o build gera alguns estilos
+  # inline (posicionamento do carrossel). Em script-src NÃO há unsafe-inline:
+  # todo o JavaScript está em arquivos externos.
+  # ------------------------------------------------------------------------
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://connect.facebook.net https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://www.facebook.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.facebook.com https://connect.facebook.net; frame-src https://www.googletagmanager.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 5. Tipos MIME que o Apache antigo não conhece
+# ---------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType video/webm .webm
+  AddType video/mp4 .mp4
+  AddType text/vtt .vtt
+  AddType font/woff2 .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 6. Página 404 e arquivos sensíveis
+# ---------------------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# Não serve arquivos de controle de versão nem de dependências
+RedirectMatch 404 /\.git
+RedirectMatch 404 /node_modules
+RedirectMatch 404 /package(-lock)?\.json
+
+# ---------------------------------------------------------------------------
+# 7. Codificação
+# ---------------------------------------------------------------------------
+AddDefaultCharset UTF-8

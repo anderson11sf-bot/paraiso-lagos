@@ -1,0 +1,24 @@
+{
+  "name": "paraiso-das-aguas",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Site de campanha imersivo - Paraiso das Aguas (chacaras em Sao Jose dos Campos - SP)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "servir": "node scripts/servir.mjs 4173",
+    "auditar": "node scripts/auditar.mjs",
+    "midia": "pwsh scripts/otimizar-midia.ps1",
+    "audit": "npm audit --omit=dev"
+  },
+  "dependencies": {
+    "gsap": "3.12.5",
+    "lenis": "1.1.18"
+  },
+  "devDependencies": {
+    "vite": "5.4.11",
+    "terser": "5.36.0"
+  }
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>replica</title>
+<style>body{margin:0;background:#111;font:12px monospace;color:#0f0;padding:8px;white-space:pre-wrap}
+canvas{display:block;border:1px solid #333;margin-top:6px;image-rendering:pixelated}</style>
+</head>
+<body>
+<div id="out">…</div>
+<canvas id="c" width="195" height="422"></canvas>
+<script>
+/* RÉPLICA INDEPENDENTE + TESTE DE HIPÓTESE (arquivo de verificação, não é o site).
+   Pergunta que este teste responde:
+     "createLinearGradient funciona num contexto com setTransform de escala
+      fracionária (0.5) em canvas com alpha:false?"
+   Se a resposta for não, é essa a causa do fundo preto no site. */
+const linhas = [];
+const log = (k, v) => linhas.push(String(k).padEnd(24) + ' = ' + v);
+
+const largura = 390, altura = 844, dpr = 0.5;
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: false });
+ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+const amostrar = () => [[0.5,0.08],[0.5,0.42],[0.5,0.6],[0.5,0.9]].map(([px,py]) => {
+  const d = ctx.getImageData(Math.round(canvas.width*px), Math.round(canvas.height*py), 1, 1).data;
+  return `${py}=${d[0]},${d[1]},${d[2]}`;
+}).join(' | ');
+
+// 1. Retângulo sólido (controle)
+ctx.fillStyle = '#ff0000';
+ctx.fillRect(0, 0, largura, altura);
+log('1. retangulo solido', amostrar());
+
+// 2. Gradiente COM o transform de 0.5 (é o que o site faz)
+ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.setTransform(dpr,0,0,dpr,0,0);
+let g = ctx.createLinearGradient(0, 0, 0, altura * 0.72);
+g.addColorStop(0, 'rgb(22,68,75)');
+g.addColorStop(0.45, 'rgb(46,97,91)');
+g.addColorStop(1, 'rgb(120,144,105)');
+ctx.fillStyle = g;
+ctx.fillRect(0, 0, largura, altura);
+log('2. gradiente c/ transform .5', amostrar());
+
+// 3. Gradiente SEM transform (desenha em pixel físico direto)
+ctx.setTransform(1,0,0,1,0,0);
+ctx.fillStyle = '#ff00ff';
+ctx.fillRect(0,0,canvas.width,canvas.height);
+g = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.72);
+g.addColorStop(0, 'rgb(22,68,75)');
+g.addColorStop(0.45, 'rgb(46,97,91)');
+g.addColorStop(1, 'rgb(120,144,105)');
+ctx.fillStyle = g;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+log('3. gradiente sem transform', amostrar());
+
+// 4. Gradiente em canvas NOVO (recém-criado, nunca anexado)
+const novo = document.createElement('canvas');
+novo.width = 195; novo.height = 422;
+const g4 = novo.getContext('2d', { alpha: false });
+g4.setTransform(dpr,0,0,dpr,0,0);
+g4.fillStyle = '#ff00ff';
+g4.fillRect(0,0,195,422);
+let gg = g4.createLinearGradient(0, 0, 0, 844 * 0.72);
+gg.addColorStop(0, 'rgb(22,68,75)');
+gg.addColorStop(1, 'rgb(120,144,105)');
+g4.fillStyle = gg;
+g4.fillRect(0, 0, largura, altura);
+const d4 = g4.getImageData(97, 33, 1, 1).data;
+log('4. gradiente canvas novo', `${d4[0]},${d4[1]},${d4[2]}${d4[0] === 255 ? '  <-- FALHOU' : ''}`);
+
+// 5. Canvas novo COM alpha:false + transform, sem fill magenta antes
+const novo2 = document.createElement('canvas');
+novo2.width = 195; novo2.height = 422;
+const g5 = novo2.getContext('2d', { alpha: false });
+g5.setTransform(dpr,0,0,dpr,0,0);
+const gg2 = g5.createLinearGradient(0, 0, 0, 844 * 0.72);
+gg2.addColorStop(0, 'rgb(22,68,75)');
+gg2.addColorStop(1, 'rgb(120,144,105)');
+g5.fillStyle = gg2;
+g5.fillRect(0, 0, largura, altura);
+const d5 = g5.getImageData(97, 33, 1, 1).data;
+log('5. novo, alpha:false, sem magenta', `${d5[0]},${d5[1]},${d5[2]}${d5[0] === 0 ? '  <-- PRETO' : ''}`);
+
+// 6. Canvas novo COM alpha padrão (true)
+const novo3 = document.createElement('canvas');
+novo3.width = 195; novo3.height = 422;
+const g6 = novo3.getContext('2d');
+g6.setTransform(dpr,0,0,dpr,0,0);
+const gg3 = g6.createLinearGradient(0, 0, 0, 844 * 0.72);
+gg3.addColorStop(0, 'rgb(22,68,75)');
+gg3.addColorStop(1, 'rgb(120,144,105)');
+g6.fillStyle = gg3;
+g6.fillRect(0, 0, largura, altura);
+const d6 = g6.getImageData(97, 33, 1, 1).data;
+log('6. novo, alpha padrao (true)', `${d6[0]},${d6[1]},${d6[2]},${d6[3]}`);
+
+document.getElementById('out').textContent = linhas.join('\n');
+document.title = 'DIAG||' + linhas.join('||').replace(/\s+/g, ' ');
+</script>
+</body></html>
