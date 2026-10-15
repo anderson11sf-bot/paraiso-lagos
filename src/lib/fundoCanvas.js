@@ -338,7 +338,7 @@ function iniciarPrecarregamentoFrames() {
     redimensionar();
   });
 
-  const etapas = ['etapa1', 'etapa2', 'etapa3'];
+  const etapas = ['etapa1', 'etapa2'];
   const listaPasso = [];
 
   for (const et of etapas) {
@@ -369,7 +369,7 @@ function iniciarPrecarregamentoFrames() {
   function preencherRestantes() {
     if (modoLite) return;
     const restantes = [];
-    for (const et of etapas) {
+    for (const et of ['etapa1', 'etapa2']) {
       const total = config.fundo.frames?.[et]?.quantidade || 100;
       for (let i = 0; i < total; i++) {
         if (!framesCarregados[et].has(i)) restantes.push({ et, idx: i });

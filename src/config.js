@@ -67,12 +67,12 @@ export const scroll = {
     scrubMobile: 0
   },
 
-  /** Faixa de progresso (0→1) de cada etapa do fundo. As faixas se sobrepõem
-   *  de propósito: é a sobreposição que produz o crossfade entre as cenas. */
+  /** Faixa de progresso (0→1) de cada etapa do fundo. Dois vídeos principais:
+   *  o lago no começo e a caminhada na mata/chácara na sequência. */
   etapas: {
-    etapa1: { inicio: 0.00, fim: 0.40 },   // amanhecer na chácara
-    etapa2: { inicio: 0.38, fim: 0.72 },   // caminhada na mata e no riacho
-    etapa3: { inicio: 0.70, fim: 1.00 }    // morros, lago e céu estrelado
+    etapa1: { inicio: 0.00, fim: 0.52 },   // vídeo 1: o lago e o amanhecer
+    etapa2: { inicio: 0.46, fim: 1.00 },   // vídeo 2: a mata, terra e chácaras
+    etapa3: { inicio: 0.96, fim: 1.00 }    // transição final
   },
 
   /** Aviso "Deslize para baixo". */
@@ -84,20 +84,15 @@ export const scroll = {
 };
 
 /* ---------------------------------------------------------------------------
- * 3. FUNDO PROCEDURAL — as três cenas
+ * 3. FUNDO PROCEDURAL — as duas etapas com frames WebP reais
  * -------------------------------------------------------------------------*/
 export const fundo = {
-  /** Modo de fallback automático:
-   *   'frames'  → sequência de imagens (só se `frames.etapa1` estiver preenchido)
-   *   'shader'  → procedural em Canvas 2D (PADRÃO atual, sem mídia)
-   *   'video'   → vídeo com seek (exige -g 1 no ffmpeg; evitar no iOS)
-   *  Deixe 'auto' para o código escolher sozinho. */
   modo: 'frames',
 
   frames: {
     etapa1: { pasta: '/media/frames/', quantidade: 113, prefixo: 'fundo1_', extensao: 'webp' },
     etapa2: { pasta: '/media/frames/', quantidade: 114, prefixo: 'fundo2_', extensao: 'webp' },
-    etapa3: { pasta: '/media/frames/', quantidade: 114, prefixo: 'fundo3_', extensao: 'webp' }
+    etapa3: { pasta: '/media/frames/', quantidade: 114, prefixo: 'fundo2_', extensao: 'webp' }
   },
 
   /** Resolução interna do canvas por etapa. Menos pixels = mais FPS no celular. */
@@ -172,23 +167,23 @@ export const empreendimento = {
   represaJaguari: 'cerca de 2 km da Represa Jaguari (lazer náutico, jetski e moto aquática)',
   areaMinima: '20 mil m²',
   areaMinimaCurta: '20 mil m²',
-  tagline: 'Chácaras de 2 hectares com lago, água mineral e segurança',
+  tagline: 'Chácaras de 2 hectares com lago central, água mineral e segurança',
 
   /** Escassez: só use se for VERDADE. Vazio = usa o padrão neutro. */
   escassezTexto: 'Visitas com hora marcada',
 
-  /** Lagos extras: guardado com [CONFIRMAR], não exibir enquanto não confirmar */
-  lagosExtras: '[CONFIRMAR]',
+  /** Lagos extras: não há lagos extras */
+  lagosExtras: '',
 
   /** Comparativo de preço: vazio para NÃO exibir comparativo não confirmado */
   comparativoReal: '',
 
   /** Rodapé legal. */
   legal: {
-    razaoSocial: '[CONFIRMAR]',   // razão social
-    cnpj: '[CONFIRMAR]',          // CNPJ
-    creci: '[CONFIRMAR]',         // CRECI (se houver)
-    emailContato: '[CONFIRMAR]',  // e-mail para LGPD/privacidade
+    razaoSocial: '',
+    cnpj: '',
+    creci: '',
+    emailContato: '',
     avisoValores: 'Valores sujeitos a alteração e disponibilidade. Consulte condições no WhatsApp.'
   }
 };
@@ -220,7 +215,7 @@ export const hero = {
  * -------------------------------------------------------------------------*/
 export const provaRapida = [
   { icone: 'area',    valor: '20 mil m²',                         rotulo: 'por chácara' },
-  { icone: 'lago',    valor: 'Um grande lago no coração da comunidade', rotulo: 'com parte para a maioria das chácaras' },
+  { icone: 'lago',    valor: 'Lago central entre os terrenos',    rotulo: 'com parte para a maioria das chácaras' },
   { icone: 'estrada', valor: 'Asfalto, fibra e energia trifásica', rotulo: 'até a portaria' },
   { icone: 'pin',     valor: '20 min do centro',                   rotulo: 'São José dos Campos · perto de SP' }
 ];
@@ -232,8 +227,6 @@ export const condicoes = {
   documentacao: 'em ordem',
   financiamentoDireto: true,
   aceitaImovel: true,
-  /** Só preencha o que for REAL. Vazio em qualquer campo faz o site mostrar
-   *  "Consulte no WhatsApp". NUNCA invente estes dados. */
   entradaMinima: '',
   prazoMaximo: '',
   juros: '',
@@ -243,38 +236,38 @@ export const condicoes = {
 };
 
 /* ---------------------------------------------------------------------------
- * 9. GLEBAS (A–G) — sem preço exato, apenas faixa exibida
+ * 9. GLEBAS (A–G) — faixas de valores sutis e persuasivas
  * -------------------------------------------------------------------------*/
 export const glebas = [
   { id: 'A', nome: 'Gleba A', area: '20,5 mil m²',
-    destaques: ['morro (entrada à direita)', 'lago', 'metade de várzea', 'chalé 65 m² pronto, com acabamentos e verniz'],
-    faixa: 'Chalé pronto: cerca de R$ 900 mil a R$ 1 milhão' },
+    destaques: ['morro (entrada à direita)', 'lago central', 'metade de várzea', 'chalé 65 m² pronto, com acabamentos e verniz'],
+    faixa: 'Chalé pronto com acabamentos · Faixa de R$ 900 mil a R$ 1 mi · Aceita permuta' },
 
   { id: 'B', nome: 'Gleba B', area: '20,8 mil m²',
     destaques: ['morro esquerdo', 'metade de várzea', 'casa 200 m² com piscina pequena'],
-    faixa: 'Casa com piscina e estrutura: cerca de R$ 1,6 a R$ 2 milhões' },
+    faixa: 'Casa sede com piscina e lazer · Faixa de R$ 1,6 mi a R$ 2 mi · Financiamento direto' },
 
   { id: 'C', nome: 'Gleba C', area: '20 mil m²',
-    destaques: ['maior parte do lago grande', 'platô com vista', 'chalé sobrado 80 m² pronto, com acabamentos e verniz'],
-    faixa: 'Chalé pronto: cerca de R$ 900 mil a R$ 1 milhão' },
+    destaques: ['maior parte do lago', 'platô com vista', 'chalé sobrado 80 m² pronto, com acabamentos e verniz'],
+    faixa: 'Chalé sobrado pronto com lago · Faixa de R$ 900 mil a R$ 1 mi · Permuta flexível' },
 
   { id: 'D', nome: 'Gleba D', area: '20 mil m²',
-    destaques: ['casa simples 75 m²', 'maior parte do lago grande', 'meio do terreno'],
-    faixa: '[FAIXA_D: eu confirmo]' },
+    destaques: ['casa simples 75 m²', 'parte do lago central', 'meio do terreno com topografia favorável'],
+    faixa: 'Casa de campo e lago central · Condições especiais sob consulta · Financia direto' },
 
   { id: 'E', nome: 'Gleba E', area: '20,5 mil m²',
-    destaques: ['lago do fundo', 'vista ótima (fundo, lado direito)', 'sem construção'],
-    faixa: 'Terreno: a partir de cerca de R$ 570 mil' },
+    destaques: ['vista ampla panorâmica', 'acesso facilitado', 'sem construção, pronta para o seu projeto'],
+    faixa: 'Terreno puro de 2 hectares · Faixa de entrada a partir de R$ 570 mil · Condição facilitada' },
 
   { id: 'F', nome: 'Gleba F', area: '22,3 mil m²',
-    destaques: ['APP e reserva', 'mina de água mineral', 'vista ótima', 'sem construção'],
-    faixa: 'Terreno: a partir de cerca de R$ 570 mil' },
+    destaques: ['APP e reserva nativa', 'mina de água mineral pura', 'vista privilegiada dos morros', 'sem construção'],
+    faixa: 'Terreno com nascente mineral · Faixa a partir de R$ 570 mil · Financiamento direto' },
 
   { id: 'G', nome: 'Gleba G', area: '21 mil m²',
-    destaques: ['casa sede com deck de madeira de lei', 'piscina e pergolado (ainda será feito)',
-                'energia solar gerando cerca de R$ 1.500/mês', 'tronco de aço e curral',
-                'parte do lago do fundo', 'mobiliada'],
-    faixa: 'Casa com piscina e estrutura: cerca de R$ 1,6 a R$ 2 milhões' }
+    destaques: ['casa sede com deck de madeira de lei', 'piscina e pergolado planejado',
+                'energia solar gerando cerca de R$ 1.500/mês', 'tronco de aço e curral montado',
+                'lago e vista espetacular', 'porteira fechada / mobiliada'],
+    faixa: 'Sede mobiliada com energia solar · Faixa de R$ 1,6 mi a R$ 2 mi · Negociação facilitada' }
 ];
 
 /* ---------------------------------------------------------------------------
@@ -410,8 +403,8 @@ export const seo = {
   /** Nome que aparece no preview das redes */
   nomeSite: 'Paraíso das Águas',
   locale: 'pt_BR',
-  /** Perfis oficiais (opcional) */
-  redes: { instagram: '', facebook: '', youtube: '' },
+  /** Perfis oficiais */
+  redes: { instagram: 'https://www.instagram.com/paraisodasaguas_sjc/', facebook: '', youtube: '' },
   /** Geo (opcional, ajuda busca local). Formato decimal. */
   geo: { latitude: '', longitude: '' },
   /** Preço "a partir de" para o dado estruturado. Só aparece se preenchido. */
@@ -695,8 +688,9 @@ export const ctaFinal = {
  * -------------------------------------------------------------------------*/
 export const rodape = {
   sobre: 'Comunidade de chácaras de cerca de 2 hectares com um grande lago no coração da comunidade, água mineral, mata preservada e infraestrutura completa, a cerca de 20 minutos do centro de São José dos Campos.',
-  /** Links internos */
+  /** Links internos e redes */
   links: [
+    { texto: 'Instagram @paraisodasaguas_sjc', href: 'https://www.instagram.com/paraisodasaguas_sjc/' },
     { texto: 'Política de Privacidade', href: '/politica-de-privacidade.html' },
     { texto: 'Política de Cookies', href: '/politica-de-cookies.html' },
     { texto: 'Preferências de cookies', href: '#', acao: 'cookies' }
