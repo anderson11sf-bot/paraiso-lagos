@@ -260,14 +260,16 @@ body.prova-sem-fade .palco__fundo {
   z-index: var(--z-wa);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--e2);
-  min-width: 62px;
+  width: 62px;
   height: 62px;
-  padding: 0 18px;
+  padding: 0;
   border-radius: 999px;
-  background: linear-gradient(150deg, #2BD46A, #17A44F);
-  color: #04190F;
-  box-shadow: 0 12px 30px rgba(2, 17, 20, 0.55), 0 0 0 1px rgba(217, 251, 244, 0.18) inset;
+  background: #1FA38A;
+  color: #FFFFFF;
+  box-shadow: 0 10px 28px rgba(2, 17, 20, 0.45), 0 0 0 1px rgba(111, 227, 210, 0.3) inset;
+  transition: background-color var(--t-rapido) var(--curva), box-shadow var(--t-rapido) var(--curva);
   /* O botão é posicionado por translate3d (JS) — apenas composição */
   transform: translate3d(0, 0, 0);
   will-change: transform;
@@ -279,28 +281,29 @@ body.prova-sem-fade .palco__fundo {
   cursor: grab;
 }
 .wa-flutuante:active { cursor: grabbing; }
-.wa-flutuante:hover { color: #04190F; }
+.wa-flutuante:hover {
+  background: #17806D;
+  color: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(2, 17, 20, 0.55), 0 0 18px rgba(31, 163, 138, 0.45);
+}
 
 .wa-flutuante__icone {
-  width: 26px;
-  height: 26px;
-  flex: 0 0 26px;
-  fill: currentColor;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  fill: #FFFFFF;
 }
 
 .wa-flutuante__rotulo {
-  font-family: var(--fonte-rotulo);
-  font-size: var(--t-pequeno);
-  font-weight: 600;
-  white-space: nowrap;
+  display: none;
 }
 
 /* Anel do pulso: constante, fora do scroll (permitido pelo projeto) */
 .wa-flutuante__anel {
   position: absolute;
-  inset: 0;
+  inset: -3px;
   border-radius: 999px;
-  border: 2px solid rgba(43, 212, 106, 0.6);
+  border: 2px solid rgba(31, 163, 138, 0.7);
   animation: anel-pulso 2.6s var(--curva) infinite;
 }
 

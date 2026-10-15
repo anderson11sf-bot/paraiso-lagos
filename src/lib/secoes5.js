@@ -73,6 +73,23 @@ export function montarGlebas() {
     topo.appendChild(blocoNome);
     cartao.appendChild(topo);
 
+    // Foto real da gleba
+    const fotoGleba = config.midia.fotosGlebas && config.midia.fotosGlebas[g.id];
+    if (fotoGleba) {
+      const pic = criar('picture', { classe: 'gleba__foto-caixa' });
+      pic.appendChild(criar('source', { srcset: fotoGleba, type: 'image/webp' }));
+      pic.appendChild(criar('img', {
+        src: fotoGleba,
+        alt: `${g.nome} — vista real da chácara`,
+        loading: 'lazy',
+        decoding: 'async',
+        width: '720',
+        height: '405',
+        classe: 'gleba__foto'
+      }));
+      cartao.appendChild(pic);
+    }
+
     // Destaques
     const destaques = criar('ul', { classe: 'gleba__destaques' });
     for (const d of g.destaques) destaques.appendChild(criar('li', { texto: d }));

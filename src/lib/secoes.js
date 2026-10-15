@@ -97,6 +97,25 @@ export function montarProvaRapida() {
  * 3. (A VSL entra na Fase 3)
  * ------------------------------------------------------------------------ */
 
+/** Cria elemento de figura com picture WebP e lazy loading. */
+function criarMidiaSecao(caminhoWebp, altTexto) {
+  if (!caminhoWebp) return null;
+  const fig = criar('figure', { classe: 'secao__figura' });
+  const pic = criar('picture', { classe: 'secao__picture' });
+  pic.appendChild(criar('source', { srcset: caminhoWebp, type: 'image/webp' }));
+  pic.appendChild(criar('img', {
+    src: caminhoWebp,
+    alt: altTexto,
+    loading: 'lazy',
+    decoding: 'async',
+    width: '1280',
+    height: '720',
+    classe: 'secao__imagem-destaque'
+  }));
+  fig.appendChild(pic);
+  return fig;
+}
+
 /* --------------------------------------------------------------------------
  * 4. O PARAÍSO — diferenciais
  * ------------------------------------------------------------------------ */
@@ -111,6 +130,9 @@ export function montarOParaiso() {
     titulo: 'Tudo o que já está pronto aqui dentro',
     texto: 'Cada item abaixo é um fato do empreendimento — nada de promessa vaga.'
   }));
+
+  const midia = criarMidiaSecao(config.midia.secoes?.paraiso, 'O Paraíso das Águas — vista panorâmica');
+  if (midia) painel.appendChild(midia);
 
   // Grupos de diferenciais
   const grupos = criar('div', { classe: 'grupos' });
@@ -149,6 +171,9 @@ export function montarLocalizacao() {
     titulo: L.titulo,
     texto: L.texto
   }));
+
+  const midia = criarMidiaSecao(config.midia.secoes?.localizacao, 'Localização estratégica com acesso por asfalto e Represa Jaguari');
+  if (midia) painel.appendChild(midia);
 
   // Lista de distâncias. Todas com "cerca de", conforme o briefing.
   const lista = criar('ul', { classe: 'distancias', role: 'list' });
@@ -199,6 +224,9 @@ export function montarComunidade() {
     texto: C.texto
   }));
 
+  const midia = criarMidiaSecao(config.midia.secoes?.comunidade, 'Portaria, infraestrutura e segurança da comunidade');
+  if (midia) painel.appendChild(midia);
+
   const grade = criar('div', { classe: 'grade-cartoes' });
   for (const c of C.cartoes) {
     grade.appendChild(cartao({
@@ -230,6 +258,9 @@ export function montarVidaNaChacara() {
     titulo: V.titulo,
     texto: V.texto
   }));
+
+  const midia = criarMidiaSecao(config.midia.secoes?.vida, 'Vida no campo com ar puro, montanhas e lago');
+  if (midia) painel.appendChild(midia);
 
   const grade = criar('div', { classe: 'grade-cartoes grade-cartoes--vida' });
   for (const item of V.itens) {
@@ -316,7 +347,7 @@ export function montarVisao3d() {
 /**
  * Planta esquemática do empreendimento, desenhada em SVG pelo próprio site.
  * Serve como placeholder até a ortofoto real entrar em `midia.ortofoto`.
- * Formas: o limite do terreno, três lagos e a faixa da APP.
+ * Formas: o limite do terreno, um grande lago no coração da comunidade e a faixa da APP.
  */
 function montarPlantaEsquematica() {
   const div = criar('div', { classe: 'planta' });
@@ -342,10 +373,8 @@ function montarPlantaEsquematica() {
       <!-- estrada de acesso -->
       <path d="M40 380 C160 360 240 300 330 250" fill="none" stroke="#d9a83c"
             stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
-      <!-- três lagos -->
-      <ellipse cx="470" cy="150" rx="86" ry="42" fill="url(#pl-agua)"/>
-      <ellipse cx="600" cy="300" rx="70" ry="34" fill="url(#pl-agua)"/>
-      <ellipse cx="360" cy="360" rx="54" ry="24" fill="url(#pl-agua)" opacity=".75"/>
+      <!-- um grande lago no coração da comunidade -->
+      <ellipse cx="500" cy="230" rx="120" ry="60" fill="url(#pl-agua)"/>
       <!-- divisão das glebas -->
       <g stroke="#6fe3d2" stroke-opacity=".34" stroke-width="1.3" stroke-dasharray="5 5">
         <path d="M330 46 L320 404"/>

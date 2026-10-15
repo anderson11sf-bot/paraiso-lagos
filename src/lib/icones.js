@@ -94,6 +94,24 @@ const desenhos = {
   // Reserva / APP preservada
   reserva: `<path d="M12 3.6 5 7.6v8.8l7 4 7-4V7.6z"/><path d="M12 12.2 9 10.5v4.8l3 1.7 3-1.7v-4.8z" opacity=".8"/>`,
 
+  // Montanha / Morros da região
+  montanha: `<path d="m3 19 6-10 4 6 3-4 5 8z"/><path d="m9 9 2.5 3.8M16 11l1.8 2.6" opacity=".6"/>`,
+
+  // Asfalto / Estrada
+  estrada: `<path d="M4 19.5 8 4.5h8l4 15"/><path d="M12 7v3m0 4v3" opacity=".7"/>`,
+
+  // Chave (documentação em ordem)
+  chave: `<circle cx="7.5" cy="15.5" r="3.5"/><path d="m10 13 8.5-8.5M16 4.5l3.5 3.5M14 6.5l2 2"/>`,
+
+  // Financiamento direto / aperto de mão
+  apertoMao: `<path d="m11 15 2 2 4-4"/><path d="M3 11l4.5-4.5a2 2 0 0 1 2.8 0L12 8l3-3a2 2 0 0 1 2.8 0L21 8"/><path d="M7 15l-4-4 3-3"/><path d="m17 15 4-4-3-3" opacity=".7"/>`,
+
+  // Troca / aceita imóvel na troca
+  troca: `<path d="m16 3 4 4-4 4"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h12a4 4 0 0 0 4-4"/>`,
+
+  // Náutica / Represa Jaguari / Jetski
+  jetski: `<path d="M3 17c2-1 4-1 6 0s4 1 6 0 4-1 6 0"/><path d="M5 14h13l3-4-6-1-3 2H7z"/><circle cx="15" cy="6.5" r="1.5"/>`,
+
   /* ---------- Ações --------------------------------------------------- */
 
   // Seta para baixo (indica "arraste para explorar")

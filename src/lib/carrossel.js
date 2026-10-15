@@ -28,6 +28,7 @@
 
 import config from '../config.js';
 import { clamp, normalizar } from './utils.js';
+import { icone } from './icones.js';
 
 let palco = null;        // contêiner fixo
 let itens = [];          // elementos dos blocos
@@ -72,12 +73,18 @@ function montarItens() {
 
   const lista = config.titulos || [];
   for (let i = 0; i < lista.length; i++) {
-    const { rotulo, texto } = lista[i];
+    const { rotulo, texto, icone: nomeIcone } = lista[i];
 
     const bloco = document.createElement('article');
     bloco.className = 'carrossel__item';
-    // A ordem no DOM não importa para a animação, mas ajuda leitores de tela
     bloco.setAttribute('aria-hidden', 'false');
+
+    if (nomeIcone) {
+      const ic = document.createElement('span');
+      ic.className = 'carrossel__icone';
+      ic.innerHTML = icone(nomeIcone, { tamanho: 30 });
+      bloco.appendChild(ic);
+    }
 
     if (rotulo) {
       const r = document.createElement('span');
@@ -86,7 +93,7 @@ function montarItens() {
       bloco.appendChild(r);
     }
 
-    const t = document.createElement('p');
+    const t = document.createElement('h2');
     t.className = 'carrossel__texto';
     t.textContent = texto;
     bloco.appendChild(t);

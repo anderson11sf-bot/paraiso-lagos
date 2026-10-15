@@ -17,11 +17,14 @@
 
 import config from '../config.js';
 import { clamp, normalizar } from './utils.js';
+import { icone } from './icones.js';
 
 let headline = null;
 let sub = null;
 let selos = null;
 let acoes = null;
+let wordmark = null;
+let heroBgImg = null;
 let ativo = false;
 
 /* Faixa do progresso global em que o hero sai de cena. */
@@ -38,26 +41,40 @@ export function iniciarHero() {
   sub = document.getElementById('hero-sub');
   selos = document.getElementById('hero-selos');
   acoes = document.querySelector('.hero__acoes');
+  wordmark = document.querySelector('.hero__wordmark-caixa');
+  heroBgImg = document.getElementById('hero-bg-img');
   const secao = document.getElementById('hero');
 
   if (!headline || !secao) return null;
   ativo = true;
 
   montarSelos();
-  base = { headline: null, sub: null, selos: null, acoes: null };
+  base = { headline: null, sub: null, selos: null, acoes: null, wordmark: null, bg: null };
 
   return { definirProgresso, destruir };
 }
 
-/** Selos de condição comercial (Documentação em ordem · Financia direto · …). */
+/** Selos de condição comercial (Documentação em ordem · Financia direto · …) com ícones SVG. */
 function montarSelos() {
   if (!selos) return;
   const itens = config.hero.selos || [];
   selos.replaceChildren();
-  for (const texto of itens) {
+  for (const item of itens) {
     const li = document.createElement('li');
-    li.className = 'selo';
-    li.textContent = texto;
+    li.className = 'selo selo--hero';
+
+    if (typeof item === 'object' && item.icone) {
+      const ic = document.createElement('span');
+      ic.className = 'selo__icone';
+      ic.innerHTML = icone(item.icone, { tamanho: 18 });
+      li.appendChild(ic);
+    }
+
+    const txt = document.createElement('span');
+    txt.className = 'selo__texto';
+    txt.textContent = typeof item === 'object' ? item.texto : item;
+    li.appendChild(txt);
+
     selos.appendChild(li);
   }
 }
@@ -70,38 +87,42 @@ export function definirProgresso(p) {
 
   const t = normalizar(p, FAIXA_SAIDA.inicio, FAIXA_SAIDA.fim); // 0 → 1
 
-  // Em t === 0 o hero está no estado de repouso (fim da entrada CSS). Isso
-  // precisa valer tanto na primeira pintura quanto ao SUBIR de volta ao topo —
-  // é justamente aí que a reversibilidade se prova.
-  //
-  // Importante: limpamos o transform/filtro inline para a animação CSS voltar
-  // a mandar no estado de repouso.
   if (t === 0) {
     if (!noTopo) {
       noTopo = true;
-      for (const el of [headline, sub, selos, acoes]) {
+      for (const el of [headline, sub, selos, acoes, wordmark]) {
         if (!el) continue;
         el.style.transform = '';
         el.style.opacity = '';
         el.style.filter = '';
       }
-      base = { headline: null, sub: null, selos: null, acoes: null };
+      if (heroBgImg) {
+        heroBgImg.style.transform = 'scale(1) translate3d(0, 0, 0)';
+        heroBgImg.style.opacity = '1';
+      }
+      base = { headline: null, sub: null, selos: null, acoes: null, wordmark: null, bg: null };
     }
     return;
   }
 
   noTopo = false;
 
-  // 1. Deslocamento vertical: cada elemento sobe num ritmo diferente, o que dá
-  //    profundidade sem mover o palco (que é fixo).
-  // 2. Opacidade: o título é o último a sair — é o que a pessoa quer ler.
-  // 3. Desfoque curto só no fim da saída, quando já está quase sumindo.
+  // Zoom suave e leve translação vertical no fundo fotográfico do Hero
+  if (heroBgImg) {
+    const scaleBg = 1 + t * 0.12;
+    const yBg = t * 24;
+    heroBgImg.style.transform = `scale(${scaleBg.toFixed(3)}) translate3d(0, ${yBg.toFixed(1)}px, 0)`;
+    heroBgImg.style.opacity = clamp(1 - t * 0.65, 0, 1).toFixed(3);
+  }
+
+  // Deslocamento vertical e fade dos elementos
   const opTitulo = clamp(1 - t * 0.85, 0, 1);
   const opSub = clamp(1 - t * 1.25, 0, 1);
   const opSelos = clamp(1 - t * 1.6, 0, 1);
   const opAcoes = clamp(1 - t * 1.45, 0, 1);
   const blurTitulo = t > 0.55 ? ((t - 0.55) / 0.45) * 5 : 0;
 
+  escrever(wordmark, 'wordmark', -t * 30, opSub, 0, 0.6);
   escrever(headline, 'headline', -t * 46, opTitulo, blurTitulo, 0.6);
   escrever(sub, 'sub', -t * 62, opSub, blurTitulo * 0.7, 0.6);
   escrever(selos, 'selos', -t * 78, opSelos, 0, 0.8);

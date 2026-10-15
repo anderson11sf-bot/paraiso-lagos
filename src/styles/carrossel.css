@@ -1,84 +1,101 @@
 /* ============================================================================
- * carrossel.css — CARROSSEL 3D DE TEXTOS
+ * carrossel.css — CARROSSEL 3D DE TEXTOS (CENAS NARRATIVAS)
  * ----------------------------------------------------------------------------
- * Só títulos e frases curtas. O palco é FIXO e fica invisível (opacity 0 +
- * pointer-events none) fora da faixa do progresso — então não atrapalha a
- * leitura das seções densas.
- *
- * O posicionamento é feito por `transform` (translate3d primeiro, depois
- * rotateX). Nunca mexemos em top/left/margin durante a rolagem.
+ * Cada grupo de textos vive dentro de uma CENA própria com palco sticky.
+ * Não existe mais overlay de texto flutuando sobre seções densas posteriores.
+ * Fora do intervalo da cena, os textos ficam com opacity: 0 e visibility: hidden.
  * ==========================================================================*/
 
-.carrossel {
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--z-conteudo) + 1);
+.secao-cenas {
+  position: relative;
+  height: 380svh;
+  z-index: var(--z-conteudo);
+  pointer-events: none;
+}
+
+.cenas-palco {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* O carrossel nunca intercepta toque/clique: quem rola é a página */
+  overflow: hidden;
   pointer-events: none;
-  /* A cena fica atrás; o texto precisa de contraste próprio (véu por bloco) */
-  padding: var(--e8) var(--e4);
-
-  /* Entrada/saída do palco inteiro, por opacidade (barato) */
-  opacity: 0;
-  transition: opacity var(--t-lento) var(--curva);
-
-  /* Perspectiva do contêiner + preserve-3d nos filhos.
-     O valor vem de config.carrossel.perspectiva (o JS escreve a variável). */
   perspective: var(--perspectiva-carrossel, 1200px);
   perspective-origin: 50% 50%;
   transform-style: preserve-3d;
 }
 
-.carrossel[data-ativo='true'] { opacity: 1; }
-
-/* Área de posicionamento. `inset: 0` preenche a caixa inteira do palco (já
-   descontado o padding), então dá para medir a altura útil com uma única
-   chamada a getBoundingClientRect — feita no load e no resize, nunca no scroll. */
-.carrossel__area {
-  position: absolute;
-  inset: 0;
+.carrossel {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform-style: preserve-3d;
+  pointer-events: none;
+  padding: 0 var(--e4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t-medio) var(--curva), visibility var(--t-medio) var(--curva);
+}
+
+.carrossel[data-ativo='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.carrossel[data-ativo='false'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .carrossel__item {
   position: absolute;
-  left: 0;
-  right: 0;
-  /* Centro vertical do palco: o transform do JS desloca a partir daqui.
-     A âncora fica no MEIO do bloco (translateY -50%), que é também o centro
-     de rotação — por isso o rotateX gira em torno do próprio eixo. */
+  left: var(--e3);
+  right: var(--e3);
   top: 50%;
   transform-origin: 50% 50%;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* Composição: só transform, opacity e (às vezes) filter mudam */
   will-change: transform, opacity;
-}
 
-/* Painel semitransparente por bloco: garante leitura sobre a cena */
-.carrossel__item {
-  padding: var(--e4) var(--e4) var(--e4);
-  border: 1px solid rgba(111, 227, 210, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: var(--e5) var(--e4);
+  border: 1px solid rgba(111, 227, 210, 0.28);
   border-radius: var(--r-organico);
   background: linear-gradient(
     165deg,
-    rgba(3, 20, 25, 0.78) 0%,
-    rgba(4, 26, 31, 0.66) 55%,
-    rgba(3, 20, 25, 0.78) 100%
+    rgba(4, 25, 31, 0.88) 0%,
+    rgba(6, 38, 44, 0.82) 55%,
+    rgba(4, 25, 31, 0.88) 100%
   );
-  box-shadow: 0 18px 50px rgba(2, 17, 20, 0.5);
-  transition: border-color var(--t-medio) var(--curva),
-              box-shadow var(--t-medio) var(--curva);
+  box-shadow: 0 20px 60px rgba(2, 17, 20, 0.65), 0 0 30px rgba(111, 227, 210, 0.12);
+  backdrop-filter: blur(12px);
+  transition: box-shadow var(--t-medio) var(--curva), border-color var(--t-medio) var(--curva);
 }
 
-/* O bloco do centro ganha destaque: borda acesa e brilho */
 .carrossel__item[data-centro='1'] {
-  border-color: rgba(111, 227, 210, 0.42);
-  box-shadow: 0 18px 60px rgba(2, 17, 20, 0.6), 0 0 34px rgba(111, 227, 210, 0.16);
+  border-color: rgba(111, 227, 210, 0.55);
+  box-shadow: 0 24px 70px rgba(2, 17, 20, 0.75), 0 0 38px rgba(111, 227, 210, 0.22);
+}
+
+.carrossel__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ciano-suave);
+  margin-bottom: var(--e2);
 }
 
 .carrossel__rotulo {
@@ -96,29 +113,25 @@
   margin: 0;
   color: var(--palha-forte);
   font-family: var(--fonte-titulo);
-  font-size: clamp(1.35rem, 5.6vw, 2.3rem);
+  font-size: clamp(1.75rem, 6.2vw, 2.6rem);
   font-weight: 600;
-  line-height: 1.14;
+  line-height: 1.15;
   letter-spacing: -0.01em;
   text-wrap: balance;
+  text-shadow: 0 4px 30px rgba(2, 17, 20, 0.8);
 }
 
-/* ---------- Versão estática (prefers-reduced-motion) ------------------- */
-
-/*
- * Sem rotação: os blocos ficam empilhados com deslocamento pequeno e só a
- * opacidade muda. O JS já evita escrever rotateX neste modo; aqui garantimos
- * também que a perspectiva não distorça nada.
- */
+/* Modo estático (prefers-reduced-motion) */
 .carrossel--estatico { perspective: none; }
 .carrossel--estatico .carrossel__item {
   transform-style: flat;
   will-change: opacity;
 }
 
-/* ---------- Telas maiores --------------------------------------------- */
-
 @media (min-width: 720px) {
-  .carrossel__item { padding: var(--e5) var(--e5); }
-  .carrossel { padding: var(--e8) var(--e6); }
+  .carrossel__item {
+    left: var(--e5);
+    right: var(--e5);
+    padding: var(--e6) var(--e6);
+  }
 }

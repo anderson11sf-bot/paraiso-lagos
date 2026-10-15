@@ -92,17 +92,17 @@ export const fundo = {
    *   'shader'  → procedural em Canvas 2D (PADRÃO atual, sem mídia)
    *   'video'   → vídeo com seek (exige -g 1 no ffmpeg; evitar no iOS)
    *  Deixe 'auto' para o código escolher sozinho. */
-  modo: 'auto',
+  modo: 'frames',
 
   frames: {
-    etapa1: { pasta: '', quantidade: 0, prefixo: 'fundo1_', extensao: 'webp' },
-    etapa2: { pasta: '', quantidade: 0, prefixo: 'fundo2_', extensao: 'webp' },
-    etapa3: { pasta: '', quantidade: 0, prefixo: 'fundo3_', extensao: 'webp' }
+    etapa1: { pasta: '/media/frames/', quantidade: 113, prefixo: 'fundo1_', extensao: 'webp' },
+    etapa2: { pasta: '/media/frames/', quantidade: 114, prefixo: 'fundo2_', extensao: 'webp' },
+    etapa3: { pasta: '/media/frames/', quantidade: 114, prefixo: 'fundo3_', extensao: 'webp' }
   },
 
   /** Resolução interna do canvas por etapa. Menos pixels = mais FPS no celular. */
   resolucao: {
-    mobile: 0.62,
+    mobile: 0.8,
     desktop: 1.0,
     modoLite: 0.5
   },
@@ -149,14 +149,13 @@ export const fundo = {
  * -------------------------------------------------------------------------*/
 export const vidroTV = {
   ativo: true,
-  /** Escurecimento do vidro. Baixo de propósito: a cena tem de ser LUMINOSA.
-   *  Quem garante a leitura do texto é o painel do hero, não o vidro. */
-  opacidade: 0.16,
-  reflexoOpacidade: 0.09,   // reflexo diagonal
-  vinhetaForca: 0.42,       // cantos escurecidos
-  scanlineOpacidade: 0.03,  // textura fina de TV
-  brilhoBorda: 0.3,         // risco de luz na borda
-  raioCantos: '14px',
+  /** Escurecimento do vidro suave e elegante estilo roça com tecnologia */
+  opacidade: 0.14,
+  reflexoOpacidade: 0.06,   // reflexo diagonal sutil
+  vinhetaForca: 0.40,       // cantos escurecidos
+  scanlineOpacidade: 0.0,   // SEM scanline de robô
+  brilhoBorda: 0.22,        // risco fino e sutil
+  raioCantos: '18px',
   /** backdrop-filter é caro: só em aparelhos fortes e nunca animado. */
   usarBackdropFiltro: true
 };
@@ -169,22 +168,27 @@ export const empreendimento = {
   cidade: 'São José dos Campos',
   uf: 'SP',
   tempoDoCentro: 'cerca de 20 min do centro',
+  distanciaSP: 'cerca de 1h30 de São Paulo (~100 km)',
+  represaJaguari: 'cerca de 2 km da Represa Jaguari (lazer náutico, jetski e moto aquática)',
   areaMinima: '20 mil m²',
-  areaMinimaCurta: '20 mil m²+',
-  tagline: 'Chácaras com lago, água mineral e segurança',
+  areaMinimaCurta: '20 mil m²',
+  tagline: 'Chácaras de 2 hectares com lago, água mineral e segurança',
 
   /** Escassez: só use se for VERDADE. Vazio = usa o padrão neutro. */
   escassezTexto: 'Visitas com hora marcada',
 
-  /** Comparativo de preço: se estiver vazio, a frase comparativa NÃO é exibida. */
+  /** Lagos extras: guardado com [CONFIRMAR], não exibir enquanto não confirmar */
+  lagosExtras: '[CONFIRMAR]',
+
+  /** Comparativo de preço: vazio para NÃO exibir comparativo não confirmado */
   comparativoReal: '',
 
   /** Rodapé legal. */
   legal: {
-    razaoSocial: '',   // PREENCHER: razão social
-    cnpj: '',          // PREENCHER: CNPJ
-    creci: '',         // PREENCHER: CRECI (se houver)
-    emailContato: '',  // PREENCHER: e-mail para LGPD/privacidade
+    razaoSocial: '[CONFIRMAR]',   // razão social
+    cnpj: '[CONFIRMAR]',          // CNPJ
+    creci: '[CONFIRMAR]',         // CRECI (se houver)
+    emailContato: '[CONFIRMAR]',  // e-mail para LGPD/privacidade
     avisoValores: 'Valores sujeitos a alteração e disponibilidade. Consulte condições no WhatsApp.'
   }
 };
@@ -193,16 +197,21 @@ export const empreendimento = {
  * 6. HERO
  * -------------------------------------------------------------------------*/
 export const hero = {
-  headline: 'Seu paraíso de 2 hectares com lago, água mineral e segurança, a 20 minutos do centro de São José dos Campos',
-  subheadline:
-    'Logo, água mineral e segurança, a cerca de 20 min do centro. Documentação em ordem. Financiamento direto com o proprietário. Aceitamos seu imóvel na negociação.',
+  wordmark: 'Paraíso das Águas',
+  subtituloTopo: 'São José dos Campos',
+  headline: 'Seu paraíso de 2 hectares com lago, água mineral e segurança',
+  subheadline: 'a 20 minutos do centro de São José dos Campos',
+  subheadline1: 'a 20 minutos do centro de São José dos Campos',
   ctaPrimario: 'Agendar visita no WhatsApp',
   ctaSecundario: 'Ver as chácaras disponíveis',
-  selos: ['Documentação em ordem', 'Financia direto', 'Aceita imóvel na troca'],
-  /** Poster da primeira dobra: LCP instantâneo. Vazio = gradiente + canvas. */
-  poster: '',
-  /** Entrada "esfumaçada" do texto. A animação em si está em hero.css (CSS
-   *  puro, para não depender de requestAnimationFrame). */
+  selos: [
+    { texto: 'Documentação em ordem', icone: 'chave' },
+    { texto: 'Financia direto com o proprietário', icone: 'apertoMao' },
+    { texto: 'Aceita imóvel na troca', icone: 'troca' }
+  ],
+  /** Poster da primeira dobra: foto real do lago */
+  poster: '/media/img/hero-lago.webp',
+  /** Entrada "esfumaçada" do texto. */
   fumaca: { blurInicial: 18, blurFinal: 0, duracao: 1.1, escalaInicial: 1.04 }
 };
 
@@ -210,10 +219,10 @@ export const hero = {
  * 7. PROVA RÁPIDA (faixa de 4 itens)
  * -------------------------------------------------------------------------*/
 export const provaRapida = [
-  { icone: 'area',    valor: '20 mil m²+',                rotulo: 'por chácara' },
-  { icone: 'lago',    valor: '3 lagos grandes',           rotulo: 'parte na matrícula' },
-  { icone: 'energia', valor: 'Asfalto + fibra + trifásica', rotulo: 'até a portaria' },
-  { icone: 'pin',     valor: '20 min do centro',          rotulo: 'São José dos Campos' }
+  { icone: 'area',    valor: '20 mil m²',                         rotulo: 'por chácara' },
+  { icone: 'lago',    valor: 'Um grande lago no coração da comunidade', rotulo: 'com parte para a maioria das chácaras' },
+  { icone: 'estrada', valor: 'Asfalto, fibra e energia trifásica', rotulo: 'até a portaria' },
+  { icone: 'pin',     valor: '20 min do centro',                   rotulo: 'São José dos Campos · perto de SP' }
 ];
 
 /* ---------------------------------------------------------------------------
@@ -272,32 +281,34 @@ export const glebas = [
  * 10. DIFERENCIAIS (usados na seção "O Paraíso")
  * -------------------------------------------------------------------------*/
 export const diferenciais = [
-  { grupo: 'Águas', itens: [
-    '3 lagos grandes — cada propriedade tem uma parte própria na sua matrícula',
-    'Água em abundância; vizinho da Cristágua, que usa a mesma fonte de água mineral',
-    'Riacho da represa passa dentro da propriedade',
-    'Mina de água mineral na Gleba F',
-    'Criação de animais e horta natural, com terra de alta qualidade e muita água'
+  { grupo: 'Águas e Lazer', itens: [
+    'Um grande lago no coração da comunidade, com parte para a maioria das chácaras',
+    'Mina de água mineral na parte mais alta do terreno (Gleba F)',
+    'Água em abundância; vizinho da Cristágua, com a mesma fonte de água mineral',
+    'Cerca de 2 km da Represa Jaguari — ponto privilegiado para jetski, moto aquática e náutica',
+    'Riacho preservado correndo dentro da propriedade',
+    'Criação de animais e horta com solo fértil e muita água'
   ]},
   { grupo: 'Infraestrutura', itens: [
     'Asfalto até a portaria',
-    'Fibra óptica com sinal forte',
-    'Energia trifásica forte',
+    'Fibra óptica com sinal de alta velocidade',
+    'Energia trifásica forte instalada',
     'Ruas abertas e cascalhadas (algumas em finalização)',
     'Sem problema de enchente e sem impedimento de tráfego'
   ]},
-  { grupo: 'Localização', itens: [
-    'Cerca de 2 km da represa e da UBS',
+  { grupo: 'Localização Privilegiada', itens: [
+    'Cerca de 20 min do centro de São José dos Campos',
+    'Cerca de 1h30 de São Paulo (~100 km) com acesso fácil pela Dutra e Carvalho Pinto',
+    'Cerca de 2 km da Represa Jaguari e da UBS',
     'Cerca de 4,5 km da UPA',
-    '19 km do Aquárius, 14,5 km do Calçadão do Centro, 6 km do Santana Parque (Parque da Cidade)',
-    'Cerca de 20 min do centro de São José dos Campos'
+    '19 km do Aquárius, 14,5 km do Calçadão do Centro e 6 km do Parque da Cidade'
   ]},
-  { grupo: 'Natureza e vizinhança', itens: [
-    'Área de APP preservada',
-    'Bairro com empresários locais e profissionais liberais na mesma via',
-    'Monitoramento por grupo de WhatsApp entre vizinhos',
-    'Silêncio, privacidade e qualidade de vida'
-  ]}
+  { grupo: 'Natureza e Comunidade', itens: [
+    'Área de APP totalmente preservada com mata nativa',
+    'Comunidade de chácaras com vizinhança solidária e decisões em conjunto',
+    'Portaria com câmeras e monitoramento por grupo de WhatsApp entre vizinhos',
+    'Silêncio, privacidade, segurança e contato direto com a natureza'
+  ] }
 ];
 
 /* ---------------------------------------------------------------------------
@@ -312,6 +323,10 @@ export const faq = [
     r: 'O financiamento é direto com o proprietário, mediante entrada. Sem banco e sem burocracia bancária. As condições são conversadas no WhatsApp.' },
   { p: 'Aceitam meu imóvel como parte do pagamento?',
     r: 'Sim. Aceitamos imóveis como parte do pagamento — terrenos e outros tipos de imóvel — sujeitos a avaliação.' },
+  { p: 'Como é o lago das chácaras?',
+    r: 'Existe um grande lago no coração da comunidade, dividido entre os terrenos: a maioria das chácaras tem uma parte do lago na sua própria matrícula. Na parte mais alta fica a mina de água mineral.' },
+  { p: 'A represa fica perto?',
+    r: 'Sim! A Represa Jaguari fica a cerca de 2 km, sendo excelente para passeios de barco, moto aquática, jetski e pesca esportiva.' },
   { p: 'Qual o valor da entrada e o prazo?', r: '' },
   { p: 'Existem juros?', r: '' },
   { p: 'Que tipo de documentação eu recebo?', r: '' },
@@ -326,7 +341,7 @@ export const faq = [
 ];
 
 /* ---------------------------------------------------------------------------
- * 12. MÍDIA — pastas e arquivos
+ * 12. MÍDIA — pastas e arquivos reais mapeados
  * -------------------------------------------------------------------------*/
 export const midia = {
   /** Caminhos públicos (o build copia public/ para a raiz do site). */
@@ -336,30 +351,49 @@ export const midia = {
     frames: '/media/frames/'
   },
 
-  logo: '',                 // ex.: '/media/img/logo-aguas.svg'
+  logo: '',                 // só exibe logo se houver arquivo real
 
   /** VSL 16:9. poster = imagem leve; src = mp4 (carrega só no clique). */
-  vsl: { poster: '', src: '', webm: '' },
+  vsl: { poster: '/media/img/vsl-poster.webp', src: '/media/video/vsl.mp4', webm: '' },
 
   /** 4 vídeos verticais 9:16 (demonstrações). */
   videos: [
-    { poster: '', src: '', titulo: 'Demonstração 1' },
-    { poster: '', src: '', titulo: 'Demonstração 2' },
-    { poster: '', src: '', titulo: 'Demonstração 3' },
-    { poster: '', src: '', titulo: 'Demonstração 4' }
+    { poster: '/media/img/demo-1.webp', src: '/media/video/demo-1.mp4', titulo: 'O Lago e o Entorno' },
+    { poster: '/media/img/demo-2.webp', src: '/media/video/demo-2.mp4', titulo: 'Mata e Nascentes' },
+    { poster: '/media/img/demo-3.webp', src: '/media/video/demo-3.mp4', titulo: 'Vista Aérea do Terreno' },
+    { poster: '/media/img/demo-4.webp', src: '/media/video/demo-4.mp4', titulo: 'Estrutura e Casas' }
   ],
 
-  /** Ortofoto / visão 3D. Duas resoluções para zoom sem travar. */
-  ortofoto: { pequena: '', grande: '' },
+  /** Ortofoto / visão 3D. */
+  ortofoto: { pequena: '/media/img/localizacao-mapa.webp', grande: '/media/img/ortofoto-terreno.webp' },
 
-  /** Mapa embed do Google (link curto já fornecido). */
+  /** Mapa embed do Google (link fornecido). */
   mapaLink: 'https://maps.app.goo.gl/kVdV28pwVikpB3oJ6',
 
-  /** Fotos por gleba (a Fase 3 usa). */
-  fotosGlebas: {},
+  /** Mapeamento de fotos reais por seção do site */
+  secoes: {
+    hero: '/media/img/hero-lago.webp',
+    paraiso: '/media/img/paraiso.webp',
+    infraestrutura: '/media/img/infraestrutura.webp',
+    localizacao: '/media/img/localizacao-mapa.webp',
+    comunidade: '/media/img/comunidade.webp',
+    vida: '/media/img/vida-chacara.webp',
+    visao3d: '/media/img/ortofoto-terreno.webp'
+  },
+
+  /** Fotos por gleba */
+  fotosGlebas: {
+    A: '/media/img/gleba-a.webp',
+    B: '/media/img/gleba-b.webp',
+    C: '/media/img/gleba-c.webp',
+    D: '/media/img/gleba-d.webp',
+    E: '/media/img/gleba-e.webp',
+    F: '/media/img/gleba-f.webp',
+    G: '/media/img/gleba-g.webp'
+  },
 
   /** Poster do hero. */
-  heroPoster: ''
+  heroPoster: '/media/img/hero-lago.webp'
 };
 
 /* ---------------------------------------------------------------------------
@@ -369,7 +403,7 @@ export const seo = {
   titulo: 'Chácaras em São José dos Campos | Paraíso das Águas — 2 hectares com lago e água mineral',
   /** Até ~155 caracteres: é o que o Google mostra. */
   descricao:
-    'Chácaras de 20 mil m² com lagos, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 min do centro de São José dos Campos. Documentação em ordem e financiamento direto com o proprietário.',
+    'Chácaras de 20 mil m² com um grande lago no coração da comunidade, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 min do centro de São José dos Campos. Documentação em ordem e financiamento direto com o proprietário.',
   url: 'https://SEU-DOMINIO.com.br',   // PREENCHER: domínio final, sem barra no fim
   imagemOg: '/og.jpg',                 // PREENCHER: imagem 1200×630
   palavrasChave: 'chácara à venda São José dos Campos, terreno com lago, sítio São José dos Campos, chácara com água mineral',
@@ -466,13 +500,11 @@ export const trackingTeste = {
  * Ordem do array = ordem em que os blocos aparecem durante a rolagem.
  * -------------------------------------------------------------------------*/
 export const titulos = [
-  { rotulo: 'O paraíso',        texto: 'Um lugar onde a água nasce na sua própria terra' },
-  { rotulo: 'As águas',         texto: 'Três lagos grandes, e uma parte de cada um na sua matrícula' },
-  { rotulo: 'A infraestrutura', texto: 'Asfalto até a portaria, fibra óptica e energia trifásica forte' },
-  { rotulo: 'A localização',    texto: 'O silêncio da roça a cerca de 20 minutos do centro' },
-  { rotulo: 'A vizinhança',     texto: 'Uma comunidade que cuida junto, com portaria e monitoramento' },
-  { rotulo: 'A vida aqui',      texto: 'Cavalos, ovelhas, horta natural e terra de verdade' },
-  { rotulo: 'A chegada',        texto: 'Dois hectares só seus, com lago, mata e céu aberto' }
+  { rotulo: 'Água pura', icone: 'nascente', texto: 'Onde a água nasce na sua própria terra' },
+  { rotulo: 'O Lago', icone: 'lago', texto: 'Um grande lago no coração da comunidade' },
+  { rotulo: 'Infraestrutura', icone: 'estrada', texto: 'Asfalto até a portaria, fibra óptica e energia trifásica' },
+  { rotulo: 'O Paraíso', icone: 'montanha', texto: 'A 20 min do centro e a 2 km da Represa Jaguari com jetski' },
+  { rotulo: 'Visão 3D', icone: 'area', texto: 'Chácaras de 2 hectares com documentação em ordem' }
 ];
 
 /** Comportamento do carrossel. */
@@ -480,28 +512,27 @@ export const carrossel = {
   /** Faixa do progresso global em que o carrossel acontece. */
   faixa: { inicio: 0.08, fim: 0.40 },
   /** Quantos textos ficam visíveis ao mesmo tempo (o resto fica fora de cena). */
-  visiveis: 5,
+  visiveis: 3,
   /** Rotação máxima de entrada/saída, em graus. */
-  rotacaoMax: 70,
+  rotacaoMax: 45,
   /** Perspectiva do contêiner, em px. */
   perspectiva: 1200,
   /** Translação vertical máxima, em múltiplos da altura do bloco. */
-  deslocamento: 1.45,
+  deslocamento: 1.2,
   /** Opacidade mínima (para o texto não "piscar" ao entrar). */
-  opacidadeMinima: 0.06,
+  opacidadeMinima: 0,
   /** Escala do bloco no centro. */
   escalaCentro: 1,
   /** Escala do bloco nas pontas (dá sensação de profundidade). */
-  escalaPonta: 0.72,
-  /** Desfoque nas pontas, em px. Use 0 para desligar (mais rápido). */
-  desfoquePonta: 4
+  escalaPonta: 0.85,
+  /** Desfoque nas pontas, em px. */
+  desfoquePonta: 0
 };
 
 /* ---------------------------------------------------------------------------
- * 17. PROVA RÁPIDA — legenda
+ * 17. PROVA RÁPIDA — legenda (vazia: só exibe se comparativoReal for preenchido)
  * -------------------------------------------------------------------------*/
-export const provaLegenda =
-  'Dois hectares com lago, água mineral e infraestrutura por uma fração do que se paga por espaço bem menor na região.';
+export const provaLegenda = '';
 
 /* ---------------------------------------------------------------------------
  * 18. LOCALIZAÇÃO E DISTÂNCIAS (seção 5)
@@ -509,17 +540,18 @@ export const provaLegenda =
 export const localizacao = {
   titulo: 'Perto de tudo o que importa, longe do barulho',
   texto:
-    'Acesso por asfalto até a portaria e ruas internas abertas e cascalhadas. O dia a dia resolve rápido, sem abrir mão do silêncio.',
+    'Acesso por asfalto até a portaria, ruas internas cascalhadas e a minutos da Represa Jaguari. O dia a dia resolve rápido, sem abrir mão do silêncio da roça.',
   /** Todas as distâncias com "cerca de", conforme o briefing. */
   distancias: [
+    { destino: 'Represa Jaguari (jetski, esportes náuticos e pesca)', valor: 'cerca de 2 km' },
     { destino: 'Centro de São José dos Campos', valor: 'cerca de 20 min' },
+    { destino: 'São Paulo (Dutra / Carvalho Pinto)', valor: 'cerca de 1h30 (~100 km)' },
+    { destino: 'Santana Parque (Parque da Cidade)', valor: 'cerca de 6 km' },
     { destino: 'Calçadão do Centro', valor: 'cerca de 14,5 km' },
     { destino: 'Aquárius', valor: 'cerca de 19 km' },
-    { destino: 'Santana Parque (Parque da Cidade)', valor: 'cerca de 6 km' },
-    { destino: 'UPA', valor: 'cerca de 4,5 km' },
-    { destino: 'Represa e UBS', valor: 'cerca de 2 km' }
+    { destino: 'UPA e UBS', valor: 'cerca de 2 a 4,5 km' }
   ],
-  legendaMapa: 'Toque para abrir a localização no mapa'
+  legendaMapa: 'Toque para abrir a localização exata no Google Maps'
 };
 
 /* ---------------------------------------------------------------------------
@@ -543,14 +575,14 @@ export const comunidade = {
 export const vidaNaChacara = {
   titulo: 'O dia começa com o som dos bichos',
   texto:
-    'Terra de alta qualidade e muita água: dá para criar animais, manter horta o ano inteiro e ainda sobrar quintal para as crianças correrem.',
+    'Terra de alta qualidade e muita água: dá para criar animais, manter horta o ano inteiro e curtir a represa e os morros da serra.',
   itens: [
     { icone: 'cavalo', titulo: 'Cavalos e ovelhas', texto: 'Espaço de sobra para criação e para o lazer da família.' },
     { icone: 'horta',  titulo: 'Horta natural', texto: 'Terra fértil e água em abundância o ano inteiro.' },
-    { icone: 'aves',   titulo: 'Galinhas e coelhos', texto: 'Criação de pequeno porte no quintal, sem complicação.' },
-    { icone: 'lago',   titulo: 'Lago no fundo de casa', texto: 'Pescar, remar ou simplesmente olhar a água parada.' },
+    { icone: 'lago',   titulo: 'Um grande lago no coração', texto: 'Água límpida para contemplar e viver em paz.' },
+    { icone: 'jetski', titulo: 'Represa Jaguari a 2 km', texto: 'Passeios de barco, moto aquática e esportes na água.' },
     { icone: 'cerca',  titulo: 'Cerca e porteira', texto: 'Área de APP preservada e ruas internas tranquilas.' },
-    { icone: 'sol',    titulo: 'Céu aberto', texto: 'Silêncio, privacidade e qualidade de vida de verdade.' }
+    { icone: 'montanha', titulo: 'Vista dos morros e céu aberto', texto: 'Silêncio, ar puro e qualidade de vida de verdade.' }
   ]
 };
 
@@ -560,9 +592,7 @@ export const vidaNaChacara = {
 export const visao3d = {
   titulo: 'Veja a divisão das chácaras',
   texto:
-    'Arraste para explorar a vista aérea e entender a posição de cada gleba, dos lagos e da área de reserva.',
-  /** Preencha em midia.ortofoto. Sem imagem, o site mostra um PLACEHOLDER
-   *  funcional (planta esquemática gerada pelo próprio site). */
+    'Explore a vista aérea com as demarcações reais das glebas, do lago central e da área de preservação.',
   legenda: 'Vista aérea do empreendimento — divisão das glebas A a G'
 };
 
@@ -579,10 +609,10 @@ export const visao3d = {
 export const vsl = {
   /* --- Conteúdo ------------------------------------------------------ */
   titulo: 'Veja o Paraíso das Águas de perto',
-  subtitulo: 'Três lagos, mata preservada e água mineral dentro da propriedade.',
+  subtitulo: 'Um grande lago no coração da comunidade, mata preservada e água mineral dentro da propriedade.',
   legenda: 'Vídeo de apresentação',
   duracao: '',                  // ex.: '2:14' (deixe vazio para não exibir)
-  poster: '',                   // ex.: '/media/img/vsl-poster-1280.avif'
+  poster: '/media/img/vsl-poster.webp',
 
   /* --- Fontes do vídeo (preenchidas depois de otimizar a mídia) ------ */
   fontes: { mp4: '', webm: '' },
@@ -616,7 +646,7 @@ export const vsl = {
 export const videosSecao = {
   rotulo: 'Demonstrações',
   titulo: 'Ande pela chácara sem sair de casa',
-  texto: 'Quatro vídeos curtos mostrando os lagos, as ruas, as casas e a vista.',
+  texto: 'Quatro vídeos curtos mostrando o grande lago, as ruas, as casas e a vista.',
   faixa: { inicio: 0.72, fim: 0.88 },
   marcos: {
     titulo: 0.00,
@@ -648,7 +678,7 @@ export const faqExtras = [
 export const ctaFinal = {
   rotulo: 'Agende sua visita',
   titulo: 'Venha ver com os seus olhos',
-  texto: 'A visita é com hora marcada. A gente combina o melhor dia e mostra cada canto: os lagos, a mina de água, as ruas e as chácaras disponíveis.',
+  texto: 'A visita é com hora marcada. A gente combina o melhor dia e mostra cada canto: o grande lago no coração da comunidade, a mina de água, as ruas e as chácaras disponíveis.',
   botao: 'Agendar visita no WhatsApp',
   botaoSecundario: 'Tenho um imóvel para negociar',
   /** Só aparece se estiver preenchido (escassez de verdade, não inventada). */
@@ -664,7 +694,7 @@ export const ctaFinal = {
  * 26. RODAPÉ
  * -------------------------------------------------------------------------*/
 export const rodape = {
-  sobre: 'Comunidade de chácaras de cerca de 2 hectares com lagos, água mineral, mata preservada e infraestrutura completa, a cerca de 20 minutos do centro de São José dos Campos.',
+  sobre: 'Comunidade de chácaras de cerca de 2 hectares com um grande lago no coração da comunidade, água mineral, mata preservada e infraestrutura completa, a cerca de 20 minutos do centro de São José dos Campos.',
   /** Links internos */
   links: [
     { texto: 'Política de Privacidade', href: '/politica-de-privacidade.html' },

@@ -44,17 +44,11 @@ import { iniciarWhatsAppFlutuante, ligarBotoesWhatsApp } from './lib/whatsapp.js
 function aplicarTextos() {
   const headline = document.getElementById('hero-headline');
   if (headline) {
-    // O `<em>` do HTML é preservado; só trocamos o conteúdo quando o config
-    // traz um headline próprio e diferente.
-    const desejado = config.hero.headline;
-    if (desejado && headline.dataset.origem !== 'config') {
-      headline.replaceChildren(document.createTextNode(desejado));
-      headline.dataset.origem = 'config';
-    }
+    headline.innerHTML = 'Seu paraíso de <em>2 hectares</em> com lago, água mineral e segurança';
   }
 
   const sub = document.getElementById('hero-sub');
-  if (sub) sub.textContent = config.hero.subheadline;
+  if (sub) sub.textContent = config.hero.subheadline || config.hero.subheadline1 || 'a 20 minutos do centro de São José dos Campos';
 
   const ctaPrimario = document.getElementById('hero-cta-primario');
   if (ctaPrimario) {

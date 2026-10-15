@@ -123,7 +123,8 @@ function montarJsonLd() {
       addressCountry: 'BR'
     },
     amenityFeature: [
-      { '@type': 'LocationFeatureSpecification', name: '3 lagos grandes', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Um grande lago no coração da comunidade', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Represa Jaguari a 2 km (jetski e esportes náuticos)', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Água mineral', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Asfalto até a portaria', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Fibra óptica', value: true },

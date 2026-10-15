@@ -107,6 +107,7 @@ export function iniciarFundo(elementoCanvas, ambienteDetectado) {
   cenas = montarCenas();
 
   redimensionar();
+  iniciarPrecarregamentoFrames();
 
   // Reage só a mudanças reais de tamanho (não à barra do navegador no iOS).
   let tResize = 0;
@@ -250,6 +251,149 @@ export function iniciarFundo(elementoCanvas, ambienteDetectado) {
   };
 }
 
+/* ---------- Gerenciador de Frames WebP por Scroll (Seção 2B) ---------- */
+const framesCarregados = {
+  etapa1: new Map(),
+  etapa2: new Map(),
+  etapa3: new Map()
+};
+
+const framesEmCarregamento = new Set();
+
+function obterUrlFrame(etapaChave, indice) {
+  const dados = config.fundo.frames?.[etapaChave];
+  if (!dados) return null;
+  const num = String(indice + 1).padStart(4, '0');
+  const pasta = dados.pasta || '/media/frames/';
+  const prefixo = dados.prefixo || `${etapaChave}_`;
+  const ext = dados.extensao ? (dados.extensao.startsWith('.') ? dados.extensao : `.${dados.extensao}`) : '.webp';
+  return `${pasta}${prefixo}${num}${ext}`;
+}
+
+async function carregarFrame(etapaChave, indice) {
+  const chave = `${etapaChave}_${indice}`;
+  const mapa = framesCarregados[etapaChave];
+  if (!mapa || mapa.has(indice)) return mapa ? mapa.get(indice) : null;
+  if (framesEmCarregamento.has(chave)) return null;
+
+  const url = obterUrlFrame(etapaChave, indice);
+  if (!url) return null;
+
+  framesEmCarregamento.add(chave);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    let img;
+    if (typeof createImageBitmap === 'function') {
+      img = await createImageBitmap(blob);
+    } else {
+      img = await new Promise((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = reject;
+        i.src = URL.createObjectURL(blob);
+      });
+    }
+    mapa.set(indice, img);
+    framesEmCarregamento.delete(chave);
+    return img;
+  } catch {
+    framesEmCarregamento.delete(chave);
+    return null;
+  }
+}
+
+function obterFrameMaisProximo(etapaChave, indiceAlvo) {
+  const mapa = framesCarregados[etapaChave];
+  if (!mapa || mapa.size === 0) return null;
+  if (mapa.has(indiceAlvo)) return mapa.get(indiceAlvo);
+
+  const total = config.fundo.frames?.[etapaChave]?.quantidade || 114;
+  for (let d = 1; d < total; d++) {
+    const antes = indiceAlvo - d;
+    if (antes >= 0 && mapa.has(antes)) return mapa.get(antes);
+    const depois = indiceAlvo + d;
+    if (depois < total && mapa.has(depois)) return mapa.get(depois);
+  }
+  return null;
+}
+
+function desenharCover(destinoCtx, img, dw, dh) {
+  const iw = img.width || img.naturalWidth || 1;
+  const ih = img.height || img.naturalHeight || 1;
+  const escala = Math.max(dw / iw, dh / ih);
+  const w = iw * escala;
+  const h = ih * escala;
+  const x = (dw - w) * 0.5;
+  const y = (dh - h) * 0.5;
+  destinoCtx.drawImage(img, x, y, w, h);
+}
+
+function iniciarPrecarregamentoFrames() {
+  if (config.fundo.modo !== 'frames') return;
+
+  // Frame 1 imediato (poster)
+  carregarFrame('etapa1', 0).then(() => {
+    redimensionar();
+  });
+
+  const etapas = ['etapa1', 'etapa2', 'etapa3'];
+  const listaPasso = [];
+
+  for (const et of etapas) {
+    const total = config.fundo.frames?.[et]?.quantidade || 100;
+    // 1 a cada 4 frames (ou 1 a cada 6 se modoLite)
+    const passo = modoLite ? 6 : 4;
+    for (let i = 0; i < total; i += passo) {
+      listaPasso.push({ et, idx: i });
+    }
+  }
+
+  let idxFila = 0;
+  function proximoPasso() {
+    if (idxFila >= listaPasso.length) {
+      preencherRestantes();
+      return;
+    }
+    const item = listaPasso[idxFila++];
+    carregarFrame(item.et, item.idx).then(() => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(proximoPasso, { timeout: 250 });
+      } else {
+        setTimeout(proximoPasso, 40);
+      }
+    });
+  }
+
+  function preencherRestantes() {
+    if (modoLite) return;
+    const restantes = [];
+    for (const et of etapas) {
+      const total = config.fundo.frames?.[et]?.quantidade || 100;
+      for (let i = 0; i < total; i++) {
+        if (!framesCarregados[et].has(i)) restantes.push({ et, idx: i });
+      }
+    }
+
+    let idxRest = 0;
+    function proximoRestante() {
+      if (idxRest >= restantes.length) return;
+      const item = restantes[idxRest++];
+      carregarFrame(item.et, item.idx).then(() => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(proximoRestante, { timeout: 350 });
+        } else {
+          setTimeout(proximoRestante, 50);
+        }
+      });
+    }
+    proximoRestante();
+  }
+
+  setTimeout(proximoPasso, 150);
+}
+
 /** Cria as três cenas, cada uma com o seu canvas offline. */
 function montarCenas() {
   const medidas = () => ({ largura, altura, dpr });
@@ -261,7 +405,8 @@ function montarCenas() {
       pintor: criarChacara(medidas()),
       buffer: null,
       bctx: null,
-      pPintado: -1
+      pPintado: -1,
+      ultimoIndice: -1
     },
     {
       chave: 'etapa2',
@@ -269,7 +414,8 @@ function montarCenas() {
       pintor: criarFloresta(medidas()),
       buffer: null,
       bctx: null,
-      pPintado: -1
+      pPintado: -1,
+      ultimoIndice: -1
     },
     {
       chave: 'etapa3',
@@ -277,7 +423,8 @@ function montarCenas() {
       pintor: criarNoite(medidas()),
       buffer: null,
       bctx: null,
-      pPintado: -1
+      pPintado: -1,
+      ultimoIndice: -1
     }
   ];
 
@@ -312,6 +459,7 @@ export function redimensionar() {
     c.buffer.height = canvas.height;
     c.bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.pPintado = -1;          // força redesenho do estático
+    c.ultimoIndice = -1;
   }
 
   // Já entrega um quadro válido na tela (nada de tela preta no primeiro paint)
@@ -456,18 +604,40 @@ function comporEAnimar(pGlobal, pularAnimado, dt = 0) {
   prog.etapa2 = aplicarTremor(progPuro.etapa2, 1.7);
   prog.etapa3 = aplicarTremor(progPuro.etapa3, 3.4);
 
-  // 2. Redesenha o estático de cada etapa que mudou o suficiente
+  // 2. Redesenha o estático ou frame de cada etapa que mudou
+  const usarFrames = config.fundo.modo === 'frames';
   for (const c of cenas.lista) {
     const p = progPuro[c.chave];
-    if (Math.abs(p - c.pPintado) > 0.008 || c.pPintado < 0) {
+    const totalFrames = config.fundo.frames?.[c.chave]?.quantidade || 100;
+    const indice = Math.round(p * (totalFrames - 1));
+
+    const precisaPintar = usarFrames
+      ? (indice !== c.ultimoIndice || c.pPintado < 0)
+      : (Math.abs(p - c.pPintado) > 0.008 || c.pPintado < 0);
+
+    if (precisaPintar) {
+      c.ultimoIndice = indice;
       c.pPintado = p;
       c.bctx.clearRect(0, 0, largura, altura);
       try {
-        c.pintor.estatico(c.bctx, prog[c.chave], modoLite);
+        if (usarFrames) {
+          const img = obterFrameMaisProximo(c.chave, indice);
+          if (img) {
+            desenharCover(c.bctx, img, largura, altura);
+          } else {
+            c.pintor.estatico(c.bctx, prog[c.chave], modoLite);
+            carregarFrame(c.chave, indice).then((novoImg) => {
+              if (novoImg && c.ultimoIndice === indice) {
+                desenharCover(c.bctx, novoImg, largura, altura);
+                comporEAnimar(pGlobal, true);
+              }
+            });
+          }
+        } else {
+          c.pintor.estatico(c.bctx, prog[c.chave], modoLite);
+        }
         c.erro = null;
       } catch (erro) {
-        // Se UMA cena falhar, o site não pode ficar preto: registra o erro
-        // (visível em getDiagnostico) e mantém o palco com a cor de fundo.
         c.erro = `${erro && erro.message || erro}`;
         if (typeof console !== 'undefined') {
           console.error(`[fundo] cena ${c.chave} falhou:`, erro);

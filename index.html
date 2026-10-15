@@ -7,8 +7,8 @@
 <meta name="format-detection" content="telephone=no">
 
 <title>Chácaras em São José dos Campos | Paraíso das Águas — 2 hectares com lago e água mineral</title>
-<meta name="description" content="Chácaras de 20 mil m² com lagos, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 min do centro de São José dos Campos. Documentação em ordem e financiamento direto com o proprietário.">
-<meta name="keywords" content="chácara à venda São José dos Campos, terreno com lago, sítio São José dos Campos, chácara com água mineral">
+<meta name="description" content="Chácaras de 20 mil m² com um grande lago no coração da comunidade, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 min do centro de São José dos Campos e perto de SP. Documentação em ordem e financiamento direto.">
+<meta name="keywords" content="chácara à venda São José dos Campos, terreno com lago, sítio São José dos Campos, chácara com água mineral, represa jaguari jetski">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="/">
 
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Paraíso das Águas">
 <meta property="og:title" content="Chácaras em São José dos Campos | Paraíso das Águas">
-<meta property="og:description" content="2 hectares com lago, água mineral e infraestrutura completa, a cerca de 20 min do centro. Documentação em ordem. Financiamento direto.">
+<meta property="og:description" content="2 hectares com grande lago no coração da comunidade, água mineral e infraestrutura completa, a cerca de 20 min do centro. Documentação em ordem. Financiamento direto.">
 <meta property="og:url" content="/">
 <meta property="og:image" content="/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -41,7 +41,7 @@
   "@context": "https://schema.org",
   "@type": "Residence",
   "name": "Paraíso das Águas",
-  "description": "Comunidade de chácaras de 20 mil m² com lagos, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 minutos do centro de São José dos Campos.",
+  "description": "Comunidade de chácaras de 20 mil m² com um grande lago no coração da comunidade, água mineral, asfalto, fibra óptica e energia trifásica, a cerca de 20 minutos do centro de São José dos Campos.",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "São José dos Campos",
@@ -49,8 +49,8 @@
     "addressCountry": "BR"
   },
   "amenityFeature": [
-    { "@type": "LocationFeatureSpecification", "name": "3 lagos grandes" },
-    { "@type": "LocationFeatureSpecification", "name": "Água mineral" },
+    { "@type": "LocationFeatureSpecification", "name": "Um grande lago no coração da comunidade" },
+    { "@type": "LocationFeatureSpecification", "name": "Água mineral e nascente" },
     { "@type": "LocationFeatureSpecification", "name": "Fibra óptica" },
     { "@type": "LocationFeatureSpecification", "name": "Energia trifásica" },
     { "@type": "LocationFeatureSpecification", "name": "Portaria e monitoramento" }
@@ -93,20 +93,23 @@
 
     <!-- 1. HERO ---------------------------------------------------------- -->
     <section class="secao hero" id="hero">
+      <div class="hero__bg" id="hero-bg" aria-hidden="true">
+        <img src="/media/img/hero-lago.webp" alt="Lago do Paraíso das Águas" class="hero__bg-img" id="hero-bg-img" width="1280" height="720" fetchpriority="high">
+        <div class="hero__bg-overlay"></div>
+      </div>
+
       <div class="hero__inner">
-        <p class="hero__selo-topo">
-          <span class="pulso-dot" aria-hidden="true"></span>
-          Chácaras em São José dos Campos · SP
-        </p>
+        <div class="hero__wordmark-caixa">
+          <span class="hero__wordmark">Paraíso das Águas</span>
+          <span class="hero__wordmark-sub">SÃO JOSÉ DOS CAMPOS</span>
+        </div>
 
         <h1 class="hero__headline" id="hero-headline">
-          Seu paraíso de <em>2 hectares</em> com lago, água mineral e segurança,
-          a 20 minutos do centro
+          Seu paraíso de <em>2 hectares</em> com lago, água mineral e segurança
         </h1>
 
         <p class="hero__sub" id="hero-sub">
-          Documentação em ordem. Financiamento direto com o proprietário.
-          Aceitamos seu imóvel na negociação.
+          a 20 minutos do centro de São José dos Campos
         </p>
 
         <ul class="hero__selos" id="hero-selos" aria-label="Principais condições"></ul>
@@ -132,22 +135,19 @@
       </div>
     </section>
 
+    <!-- CENA NARRATIVA DEDICADA: Palco sticky para os textos 3D -->
+    <section class="secao-cenas" id="secao-cenas">
+      <div class="cenas-palco" id="cenas-palco">
+        <div class="carrossel" id="carrossel" data-ativo="false" aria-hidden="true"></div>
+      </div>
+    </section>
+
   </main>
 
   <!-- =====================================================================
-       ESPAÇADOR — reserva no fluxo a altura das seções (que são posicionadas).
-       O JS mede as seções e escreve --altura-secoes. Sem ele, o rodapé subiria
-       para cima do conteúdo.
+       ESPAÇADOR — reserva no fluxo a altura das seções densas
        ===================================================================== -->
   <div class="espacador-secoes" aria-hidden="true"></div>
-
-  <!-- =====================================================================
-       CARROSSEL 3D DE TEXTOS — palco fixo, ativo apenas na faixa do progresso
-       definida em config.carrossel.faixa. Fica FORA de .conteudo de propósito:
-       assim a rolagem não interfere nas medidas da régua narrativa.
-       Todo o texto está no DOM real (SEO e leitores de tela).
-       ===================================================================== -->
-  <div class="carrossel" id="carrossel" data-ativo="false" aria-hidden="true"></div>
 
   <!-- =====================================================================
        SEÇÕES DE CONTEÚDO DENSO — fluxo normal, sem animação de scroll.

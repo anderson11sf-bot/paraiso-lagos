@@ -359,6 +359,28 @@
   .painel--faixa { max-width: 1060px; }
 }
 
+/* ---------- Mídias e Imagens Reais das Seções ---------- */
+.secao__figura {
+  margin: var(--e3) 0 var(--e4);
+  width: 100%;
+}
+
+.secao__picture {
+  display: block;
+  width: 100%;
+}
+
+.secao__imagem-destaque {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-organico-b);
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra-cartao);
+  background: #062427;
+}
+
 /* ---------- Sem movimento --------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {

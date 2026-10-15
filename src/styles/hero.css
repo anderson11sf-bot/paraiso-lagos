@@ -6,100 +6,85 @@
  * ==========================================================================*/
 
 .hero {
-  justify-content: flex-end;
-  /* Reserva espaço para o aviso "Deslize" (que é absoluto dentro do hero) e
-     para a área segura do aparelho. Sem esta reserva, o aviso cai em cima dos
-     botões — problema visto na verificação em tela real. */
-  padding-bottom: calc(var(--e9) + 40px + var(--safe-bottom));
-  text-align: left;
+  justify-content: center;
+  align-items: center;
+  /* Espaço para dica de rolagem e área segura */
+  padding-bottom: calc(var(--e8) + 40px + var(--safe-bottom));
+  padding-top: calc(var(--e6) + var(--safe-top));
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fundo fotográfico do Hero com zoom suave por scroll */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 35%;
+  will-change: transform, opacity;
+  filter: saturate(1.1) brightness(0.95);
+}
+
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(4, 25, 31, 0.35) 0%, rgba(3, 20, 25, 0.72) 65%, rgba(2, 17, 20, 0.92) 100%);
 }
 
 .hero__inner {
   position: relative;
   width: 100%;
-  max-width: 660px;
+  max-width: 680px;
   margin: 0 auto;
-}
-
-/*
- * VÉU DE LEITURA
- * O texto do hero fica direto sobre a cena (bom para imersão, ruim para
- * contraste). Em vez de um painel com forma — que criava uma elipse visível
- * contra o fundo — usamos um degradê ABERTO: escuro na base, transparente no
- * topo, sem borda desenhada em lugar nenhum.
- * É estático: não anima e não custa composição.
- */
-.hero__inner::before {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  /* Estoura para os lados e para baixo: nenhuma aresta pode aparecer */
-  top: -60px;
-  bottom: calc(-1 * (var(--e9) + 40px + var(--safe-bottom)));
-  left: calc(-1 * var(--e4) - 20px);
-  right: calc(-1 * var(--e4) - 20px);
-  background: linear-gradient(
-    180deg,
-    rgba(2, 17, 20, 0.10) 0%,
-    rgba(2, 17, 20, 0.30) 22%,
-    rgba(2, 17, 20, 0.50) 55%,
-    rgba(2, 17, 20, 0.64) 82%,
-    rgba(2, 17, 20, 0.56) 100%
-  );
-  /* Desmancha as laterais: sem isso a borda do véu fica visível sobre a cena */
-  -webkit-mask-image: radial-gradient(125% 100% at 46% 60%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(125% 100% at 46% 60%, #000 55%, transparent 100%);
-  pointer-events: none;
-}
-
-/* O conteúdo fica ACIMA do scrim (que está em z-index 0) */
-.hero__inner > * {
-  position: relative;
   z-index: 1;
 }
 
-/* Selo do topo */
-.hero__selo-topo {
+/* Wordmark estilizada: Paraíso das Águas + São José dos Campos */
+.hero__wordmark-caixa {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--e2);
-  margin: 0 0 var(--e4);
-  padding: 7px 14px 7px 11px;
-  border: 1px solid rgba(111, 227, 210, 0.28);
+  justify-content: center;
+  margin: 0 auto var(--e4);
+  padding: 8px 24px;
   border-radius: 999px;
-  background: rgba(4, 25, 31, 0.5);
-  color: var(--ciano-claro);
+  background: rgba(4, 25, 31, 0.72);
+  border: 1px solid rgba(111, 227, 210, 0.35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(2, 17, 20, 0.5), inset 0 0 12px rgba(111, 227, 210, 0.12);
+  animation: hero-entrada-suave 0.8s var(--curva) 0.05s both;
+}
+
+.hero__wordmark {
   font-family: var(--fonte-rotulo);
-  font-size: var(--t-rotulo);
-  font-weight: 600;
-  letter-spacing: var(--tracking-rotulo);
+  font-size: clamp(0.9rem, 3.2vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--ciano-suave);
+  text-shadow: 0 0 14px rgba(111, 227, 210, 0.45);
 }
 
-/* Ponto pulsante do selo (CSS puro — permitido fora do scroll) */
-.pulso-dot {
-  position: relative;
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
-  border-radius: 50%;
-  background: var(--ciano-suave);
-  box-shadow: 0 0 10px rgba(111, 227, 210, 0.8);
-}
-.pulso-dot::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid rgba(111, 227, 210, 0.55);
-  animation: anel-pulso 2.4s var(--curva) infinite;
+.hero__wordmark-sub {
+  font-family: var(--fonte-texto);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--terra-clara);
+  margin-top: 2px;
 }
 
-/* Headline: a entrada é feita em CSS (não por JS).
-   Por que CSS: animação declarada em CSS roda assim que a página pinta — não
-   depende de requestAnimationFrame nem de setTimeout. Com JS, um loop
-   estrangulado deixaria o título invisível, e o LCP iria embora junto.
-   O GSAP continua cuidando SÓ da saída por progresso de scroll. */
+/* Headline */
 @keyframes hero-entrada {
   from {
     opacity: 0;
@@ -118,34 +103,67 @@
   to   { opacity: 1; transform: translate3d(0, 0, 0);   filter: blur(0); }
 }
 
-/* O estado BASE é visível: se por algum motivo a animação não rodar (navegador
-   muito antigo, prefers-reduced-motion, captura de tela), o texto aparece. */
 .hero__headline {
-  margin-bottom: var(--e3);
-  text-shadow: 0 6px 40px rgba(2, 17, 20, 0.75);
+  margin: 0 auto var(--e3);
+  font-family: var(--fonte-titulo);
+  font-size: var(--t-hero);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--palha-forte);
+  text-wrap: balance;
+  text-shadow: 0 6px 40px rgba(2, 17, 20, 0.85);
   animation: hero-entrada var(--hero-dur, 1.1s) var(--curva) 0.1s both;
 }
 
-.hero__sub {
-  max-width: 44ch;
-  margin-bottom: var(--e4);
-  color: var(--palha);
-  font-size: clamp(1rem, 4.1vw, 1.16rem);
-  font-weight: 300;
-  text-shadow: 0 4px 24px rgba(2, 17, 20, 0.7);
-  animation: hero-entrada-suave var(--hero-dur, 1.1s) var(--curva) 0.4s both;
+.hero__headline em {
+  font-style: italic;
+  color: var(--ciano-claro);
 }
 
-.hero__selos { animation: hero-entrada-suave 0.6s var(--curva) 0.7s both; }
-.hero__acoes { animation: hero-entrada-suave 0.6s var(--curva) 0.85s both; }
+.hero__sub {
+  max-width: 48ch;
+  margin: 0 auto var(--e4);
+  color: var(--palha);
+  font-size: clamp(1rem, 4.1vw, 1.18rem);
+  font-weight: 400;
+  text-shadow: 0 4px 24px rgba(2, 17, 20, 0.7);
+  animation: hero-entrada-suave var(--hero-dur, 1.1s) var(--curva) 0.3s both;
+}
 
-/* Selos de condição comercial (Documentação em ordem · Financia direto ·
-   Aceita imóvel na troca) */
+/* Selos com ícones SVG */
 .hero__selos {
   display: flex;
   flex-wrap: wrap;
   gap: var(--e2);
-  margin-bottom: var(--e5);
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto var(--e5);
+  padding: 0;
+  list-style: none;
+  animation: hero-entrada-suave 0.6s var(--curva) 0.5s both;
+}
+
+.selo--hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(6, 36, 39, 0.75);
+  border: 1px solid rgba(111, 227, 210, 0.25);
+  color: var(--palha);
+  font-family: var(--fonte-texto);
+  font-size: clamp(0.78rem, 2.9vw, 0.88rem);
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(2, 17, 20, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.selo--hero .selo__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ciano-suave);
 }
 
 /* Ações */
@@ -153,6 +171,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--e3);
+  max-width: 420px;
+  margin: 0 auto;
+  animation: hero-entrada-suave 0.6s var(--curva) 0.7s both;
 }
 
 .hero__acoes .btn { width: 100%; }
